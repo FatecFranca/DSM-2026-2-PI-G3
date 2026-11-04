@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Encontre postos de combustível próximos a você, com preços da ANP.">
+    <title>Postos próximos com Preços</title>
+
+    <!-- Leaflet CSS (com SRI para garantir integridade) -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin="">
+
+    <!-- Estilos do projeto -->
+    <link rel="stylesheet" href="./style/style.css">
+</head>
+
+<body>
+    <header class="topo">
+        <a class="logo" href="#"><img src="./img/logo.png" alt="EncontraA!"></a>
+        <nav class="menu">
+            <a href="#" class="ativo">Postos</a>
+            <a href="#">Sobre</a>
+            <a href="#">Dicas</a>
+        </nav>
+        <div class="avatar"><img src="./img/user_Default.png" alt=""></div>
+    </header>
+
+    <div class="app">
+        <aside class="sidebar">
+            <section class="grupo">
+                <h2 class="grupo-titulo">Buscar endereço</h2>
+                <div class="localizacao-manual">
+                    <input type="text" id="endereco" placeholder="Digite seu endereço" autocomplete="off">
+                    <div id="sugestoes" class="sugestoes-box"></div>
+                    <button id="btnEndereco" type="button">Buscar</button>
+                    <button id="btnLocalizacao" type="button">Usar minha localização</button>
+                </div>
+            </section>
+
+            <section class="grupo">
+                <h2 class="grupo-titulo">Raio de busca</h2>
+                <div class="raio-wrapper">
+                    <input type="range" id="selRaio" min="1" max="10" step="1" value="5">
+                    <output id="balao-raio" class="raio-balao" for="selRaio">5 km</output>
+                </div>
+            </section>
+
+            <section class="grupo">
+                <h2 class="grupo-titulo">Combustível</h2>
+                <label>Combustível
+                    <select id="selCombustivel"></select>
+                </label>
+                <label>Bandeira
+                    <select id="selBandeira"></select>
+                </label>
+                <label>Ordenar por
+                    <select id="selOrdenacao">
+                        <option value="distancia">Mais próximos</option>
+                        <option value="preco">Mais baratos</option>
+                    </select>
+                </label>
+                <label class="switch-label">
+                    <input type="checkbox" id="chkApenasANP">
+                    Mostrar apenas postos com preço da ANP
+                </label>
+            </section>
+        </aside>
+
+        <main class="conteudo">
+            <div id="map"></div>
+            <p id="status"></p>
+            <section class="lista-container">
+                <div id="postos"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script type="module" src="./scripts/App.js"></script>
+</body>
+
+</html>

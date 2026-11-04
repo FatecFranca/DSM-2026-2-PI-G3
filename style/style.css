@@ -1,0 +1,700 @@
+/* ========================================
+   FONTE E VARIÁVEIS
+   ======================================== */
+/* Opcional, no <head>:
+   <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"> */
+
+:root {
+    --laranja: #f28c28;
+    --verde: #8ed900;
+    --verde-escuro: #7cc000;
+    --verde-circulo: rgba(142, 217, 0, 0.22);
+    --cor-fundo: #f4f4f4;
+    --cor-texto: #333;
+    --cor-texto-secundario: #777;
+    --cor-branco: #fff;
+    --cor-borda: #dcdcdc;
+    --cor-link: #1f7ae0;
+    --cor-erro: #c0392b;
+    --cor-gasolina: #f28c28;
+    --cor-etanol: #8ed900;
+    --cor-diesel: #7a7a7a;
+    --sombra-card: 0 4px 12px rgba(0, 0, 0, 0.12);
+    --raio: 10px;
+    --transicao: 0.2s ease;
+}
+
+/* ========================================
+   BASE
+   ======================================== */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Fira Sans", Arial, sans-serif;
+    background: var(--cor-branco);
+    color: var(--cor-texto);
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ========================================
+   TOPO (LOGO, MENU E AVATAR)
+   ======================================== */
+.topo {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    background: var(--cor-fundo);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    position: relative;
+    z-index: 10;
+}
+
+.logo img {
+    height: 44px;
+    width: auto;
+}
+
+.menu {
+    display: flex;
+    gap: 8px;
+}
+
+.menu a {
+    padding: 10px 28px;
+    border-radius: 24px;
+    color: #444;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    transition: background var(--transicao);
+}
+
+.menu a:hover {
+    background: rgba(242, 140, 40, 0.12);
+}
+
+.menu a.ativo {
+    background: var(--laranja);
+    color: var(--cor-branco);
+}
+
+.avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #8a8a8a;
+    overflow: hidden;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ========================================
+   LAYOUT GERAL (BARRA LATERAL + CONTEÚDO)
+   ======================================== */
+.app {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    min-height: calc(100vh - 72px);
+}
+
+.conteudo {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+/* ========================================
+   BARRA LATERAL
+   ======================================== */
+.sidebar {
+    background: var(--cor-fundo);
+    padding: 28px 24px;
+    border-right: 1px solid #e6e6e6;
+    display: flex;
+    flex-direction: column;
+}
+
+.grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.grupo:first-child {
+    padding-top: 0;
+}
+
+.grupo:last-child {
+    border-bottom: none;
+}
+
+.grupo-titulo {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--cor-texto);
+}
+
+.grupo label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-weight: 500;
+    color: #444;
+}
+
+/* Busca de endereço */
+.localizacao-manual {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.localizacao-manual input[type="text"],
+.grupo select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+    background: var(--cor-branco);
+    font-size: 15px;
+    transition: border-color var(--transicao);
+}
+
+.localizacao-manual input[type="text"]:focus,
+.grupo select:focus {
+    outline: none;
+    border-color: var(--verde);
+}
+
+.sugestoes-box {
+    position: absolute;
+    top: 48px;                  /* ajuste se a altura do input mudar */
+    left: 0;
+    right: 0;
+    background: var(--cor-branco);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    box-shadow: var(--sombra-card);
+    max-height: 180px;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.sugestao-item {
+    padding: 10px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+}
+
+.sugestao-item:last-child {
+    border-bottom: none;
+}
+
+.sugestao-item:hover {
+    background: #f0f0f0;
+}
+
+/* Raio de busca (slider) */
+#selRaio {
+    width: 100%;
+    accent-color: var(--verde);
+    cursor: pointer;
+}
+
+/* Checkbox "apenas ANP" */
+.switch-label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.switch-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--verde);
+    cursor: pointer;
+}
+
+/* ========================================
+   BOTÕES
+   ======================================== */
+button {
+    border: none;
+    padding: 12px 20px;
+    border-radius: var(--raio);
+    background: var(--verde);
+    color: var(--cor-branco);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transicao);
+}
+
+button:hover {
+    background: var(--verde-escuro);
+}
+
+button:disabled {
+    background: #c9c9c9;
+    cursor: not-allowed;
+}
+
+.sidebar button {
+    width: 100%;
+}
+
+/* ========================================
+   STATUS E MAPA
+   ======================================== */
+#status {
+    padding: 14px 32px 0;
+    color: var(--cor-texto-secundario);
+    font-size: 14px;
+    min-height: 22px;
+}
+
+#map {
+    width: 100%;
+    height: 520px;
+    margin-top: 12px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ========================================
+   LISTA DE CARDS
+   ======================================== */
+.lista-container {
+    padding: 24px 32px 40px;
+}
+
+.lista-container h2 {
+    font-size: 18px;
+    margin-bottom: 18px;
+    color: var(--cor-texto);
+}
+
+#postos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 24px;
+}
+
+#postos > p {
+    grid-column: 1 / -1;
+    color: var(--cor-texto-secundario);
+}
+
+/* ========================================
+   CARD DO POSTO
+   ======================================== */
+.posto {
+    display: flex;
+    flex-direction: column;
+    background: var(--cor-branco);
+    border-radius: 14px;
+    box-shadow: var(--sombra-card);
+    padding: 0 16px 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform var(--transicao), box-shadow var(--transicao);
+}
+
+.posto:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+}
+
+/* Topo colorido com a marca (cor pela bandeira; nomes conforme o JSON da ANP) */
+.posto-topo {
+    height: 120px;
+    margin: 0 -16px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #8a8a8a;
+}
+
+.posto-topo[data-marca="raizen"] {
+    background: #fcd62d;
+}
+
+.posto-topo[data-marca="vibra"] {
+    background: #00a043;
+}
+
+.posto-topo[data-marca="ipiranga"] {
+    background: #ff6600;
+}
+
+.posto-topo[data-marca="ale"] {
+    background: #1d1d8f;
+}
+
+/* Logo: texto por padrão. Se tiver imagens da marca, use <img> dentro de .logo-marca */
+.logo-marca {
+    background: var(--cor-branco);
+    color: #333;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    min-width: 120px;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.logo-marca img {
+    max-height: 56px;
+    width: auto;
+    margin: 0 auto;
+}
+
+/* Nome e distância lado a lado */
+.posto-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.posto h3 {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--cor-texto);
+}
+
+.distancia {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--cor-texto);
+}
+
+.distancia::before {
+    content: "📍";
+    font-size: 13px;
+}
+
+.endereco {
+    margin: 6px 0 14px;
+    font-size: 12px;
+    color: var(--cor-texto-secundario);
+    line-height: 1.4;
+}
+
+/* Lista de combustíveis em colunas */
+.lista-produtos {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    padding: 12px 6px;
+    background: var(--cor-fundo);
+    border-radius: var(--raio);
+}
+
+.lista-produtos li {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--cor-texto-secundario);
+}
+
+.lista-produtos li::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    margin-bottom: 4px;
+    border-radius: 50%;
+    background: #999;
+}
+
+.lista-produtos li.gasolina::before {
+    background: var(--cor-gasolina);
+}
+
+.lista-produtos li.etanol::before {
+    background: var(--cor-etanol);
+}
+
+.lista-produtos li.diesel::before {
+    background: var(--cor-diesel);
+}
+
+.nome-combustivel {
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.preco {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--cor-texto);
+}
+
+.data-coleta {
+    font-size: 10px;
+    color: #999;
+}
+
+.sem-preco {
+    padding: 10px;
+    background: var(--cor-fundo);
+    border-radius: var(--raio);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cor-erro);
+    text-align: center;
+}
+
+.posto a {
+    margin-top: 12px;
+    align-self: flex-start;
+    font-size: 13px;
+    color: var(--cor-link);
+    text-decoration: none;
+}
+
+.posto a:hover,
+.posto a:focus-visible {
+    text-decoration: underline;
+}
+
+/* ========================================
+   PINS DO MAPA
+   ======================================== */
+/* Pin do posto com o preço (laranja, como na tela de referência) */
+.pin-preco span {
+    display: block;
+    width: 72px;
+    height: 26px;
+    line-height: 26px;
+    text-align: center;
+    background: var(--laranja);
+    color: var(--cor-branco);
+    border-radius: 16px;
+    font: 700 12px/26px Arial, sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Ponto do usuário (verde) */
+.pin-usuario span {
+    display: block;
+    width: 12px;
+    height: 12px;
+    background: var(--verde);
+    border: 2px solid var(--cor-branco);
+    border-radius: 50%;
+    box-shadow: 0 0 0 6px rgba(142, 217, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.popup-posto {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.popup-posto strong {
+    font-size: 15px;
+    color: var(--cor-texto);
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 12px;
+}
+
+/* ========================================
+   MODAL DE BOAS-VINDAS (opcional)
+   Precisa de HTML e de um pouco de JS para abrir e fechar.
+   ======================================== */
+.modal-fundo {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(2px);
+    z-index: 2000;
+}
+
+.modal-fundo[hidden] {
+    display: none;
+}
+
+.modal {
+    width: min(440px, 100%);
+    padding: 36px 32px;
+    background: var(--cor-branco);
+    border-radius: 28px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    text-align: center;
+}
+
+.modal h2 {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--cor-texto);
+}
+
+.modal input[type="text"],
+.modal select {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #ccc;
+    border-radius: 14px;
+    background: var(--cor-branco);
+    font-size: 16px;
+}
+
+/* ========================================
+   ACESSIBILIDADE
+   ======================================== */
+:focus-visible {
+    outline: 3px solid #4d90fe;
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
+
+/* ========================================
+   RESPONSIVO
+   ======================================== */
+@media (max-width: 900px) {
+    .topo {
+        padding: 0 16px;
+    }
+
+    .menu a {
+        padding: 8px 14px;
+        font-size: 16px;
+    }
+
+    .app {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        border-right: none;
+        border-bottom: 1px solid #e6e6e6;
+    }
+
+    #map {
+        height: 420px;
+    }
+
+    .lista-container {
+        padding: 20px 16px 32px;
+    }
+}
+
+@media (max-width: 560px) {
+    .menu a:not(.ativo) {
+        display: none;
+    }
+
+    #map {
+        height: 340px;
+    }
+
+    #postos {
+        grid-template-columns: 1fr;
+    }
+}
+/* ========================================
+   BALÃO DO RAIO
+   ======================================== */
+.raio-wrapper {
+    position: relative;
+    padding-top: 36px;   /* espaço para o balão acima do slider */
+}
+
+.raio-balao {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+    padding: 4px 10px;
+    background: var(--verde);
+    color: var(--cor-branco);
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 8px;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+/* Setinha do balão apontando para o slider */
+.raio-balao::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -5px;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--verde);
+    border-bottom: 0;
+}

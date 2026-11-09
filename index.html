@@ -1,85 +1,149 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Encontre postos de combustível próximos a você, com preços da ANP.">
-    <title>Postos próximos com Preços</title>
-
-    <!-- Leaflet CSS (com SRI para garantir integridade) -->
-    <link rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossorigin="">
-
-    <!-- Estilos do projeto -->
-    <link rel="stylesheet" href="./style/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="EncontraA! — encontre e compare postos de combustível perto de você.">
+<title>PI | EncontraA! — Postos próximos</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="./style/style.css">
 </head>
-
 <body>
-    <header class="topo">
-        <a class="logo" href="#"><img src="./img/logo.png" alt="EncontraA!"></a>
-        <nav class="menu">
-            <a href="#" class="ativo">Postos</a>
-            <a href="#">Sobre</a>
-            <a href="#">Dicas</a>
-        </nav>
-        <div class="avatar"><img src="./img/user_Default.png" alt=""></div>
-    </header>
-
-    <div class="app">
-        <aside class="sidebar">
-            <section class="grupo">
-                <h2 class="grupo-titulo">Buscar endereço</h2>
-                <div class="localizacao-manual">
-                    <input type="text" id="endereco" placeholder="Digite seu endereço" autocomplete="off">
-                    <div id="sugestoes" class="sugestoes-box"></div>
-                    <button id="btnEndereco" type="button">Buscar</button>
-                    <button id="btnLocalizacao" type="button">Usar minha localização</button>
-                </div>
-            </section>
-
-            <section class="grupo">
-                <h2 class="grupo-titulo">Raio de busca</h2>
-                <div class="raio-wrapper">
-                    <input type="range" id="selRaio" min="1" max="10" step="1" value="5">
-                    <output id="balao-raio" class="raio-balao" for="selRaio">5 km</output>
-                </div>
-            </section>
-
-            <section class="grupo">
-                <h2 class="grupo-titulo">Combustível</h2>
-                <label>Combustível
-                    <select id="selCombustivel"></select>
-                </label>
-                <label>Bandeira
-                    <select id="selBandeira"></select>
-                </label>
-                <label>Ordenar por
-                    <select id="selOrdenacao">
-                        <option value="distancia">Mais próximos</option>
-                        <option value="preco">Mais baratos</option>
-                    </select>
-                </label>
-                <label class="switch-label">
-                    <input type="checkbox" id="chkApenasANP">
-                    Mostrar apenas postos com preço da ANP
-                </label>
-            </section>
-        </aside>
-
-        <main class="conteudo">
-            <div id="map"></div>
-            <p id="status"></p>
-            <section class="lista-container">
-                <div id="postos"></div>
-            </section>
-        </main>
-    </div>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script type="module" src="./scripts/App.js"></script>
+<header class="topo">
+<a class="logo" href="./" aria-label="EncontraA! Início">
+<img src="./img/logo.png" alt="EncontraA!">
+</a>
+<nav class="menu" aria-label="Navegação principal">
+<a href="#" class="ativo" id="navPostos">Postos</a>
+<button type="button" data-info="sobre">Sobre</button>
+<button type="button" data-info="dicas">Dicas</button>
+</nav>
+<button class="avatar" type="button" aria-label="Informações de perfil" data-info="perfil">
+<img src="./img/user_Default.png" alt="">
+</button>
+</header>
+<div class="app" id="app">
+<aside class="sidebar" id="filtros" aria-label="Filtros de busca">
+<section class="grupo">
+<h2>
+<span class="search-icon" aria-hidden="true">
+</span>Buscar endereço</h2>
+<div class="localizacao-manual">
+<input id="endereco" aria-label="Buscar endereço" placeholder="Digite seu endereço" autocomplete="off">
+<div id="sugestoes" class="sugestoes-box">
+</div>
+</div>
+<button id="btnLocalizacao" type="button">Usar minha localização</button>
+</section>
+<section class="grupo">
+<h2>
+<span class="location-icon" aria-hidden="true">
+</span>Raio de busca</h2>
+<div class="raio-wrapper">
+<input type="range" id="selRaio" min="1" max="15" value="5" aria-label="Raio de busca em quilômetros">
+<output id="balao-raio" for="selRaio">5 km</output>
+</div>
+</section>
+<section class="grupo fuel-group">
+<h2>
+<span class="pump" aria-hidden="true">▣</span>Combustível</h2>
+<label class="fuel">
+<span><i class="drop gasolina"></i>Gasolina</span>
+<input type="checkbox" data-fuel="gasolina">
+</label>
+<label class="fuel">
+<span><i class="drop gasolina"></i>Gasolina aditivada</span>
+<input type="checkbox" data-fuel="gasolina-aditivada">
+</label>
+<label class="fuel">
+<span><i class="drop etanol"></i>Etanol</span>
+<input type="checkbox" data-fuel="etanol">
+</label>
+<label class="fuel">
+<span><i class="drop diesel"></i>Diesel</span>
+<input type="checkbox" data-fuel="diesel">
+</label>
+<label class="fuel">
+<span><i class="drop diesel"></i>Diesel S10</span>
+<input type="checkbox" data-fuel="diesel-s10">
+</label>
+<label class="fuel">
+<span><i class="drop diesel"></i>Diesel S500</span>
+<input type="checkbox" data-fuel="diesel-s500">
+</label>
+<p id="avisoMapa" class="aviso-mapa" role="status">Para ver preços no mapa, marque apenas um combustível.</p>
+<div class="advanced">
+<span id="rotuloBandeira">Bandeira</span>
+<select id="selBandeira" aria-labelledby="rotuloBandeira" hidden>
+<option value="">Todas as bandeiras</option>
+</select>
+<details id="menuBandeiras" class="menu-bandeiras">
+<summary id="bandeiraEscolhida">Todas as bandeiras</summary>
+<div id="listaBandeiras"></div>
+</details>
+<label>
+<input id="chkApenasANP" type="checkbox"> Apenas com preços da ANP</label>
+</div>
+<button class="buscar" id="btnEndereco" type="button">
+<span class="search-icon" aria-hidden="true">
+</span>Buscar</button>
+</section>
+</aside>
+<main class="conteudo">
+<div class="map-region">
+<div id="map" aria-label="Mapa dos postos próximos">
+</div>
+<button id="toggleFiltros" class="toggle-filtros" aria-label="Recolher filtros" aria-controls="filtros" aria-expanded="true">‹</button>
+</div>
+<section class="lista-container" aria-label="Postos encontrados">
+<div class="ordenacao-resultados">
+<label>Ordenar por<select id="selOrdenacao">
+<option value="distancia">Mais próximos</option>
+<option value="preco">Mais baratos</option>
+</select>
+</label>
+</div>
+<div id="postos">
+</div>
+<p id="status" role="status">
+</p>
+</section>
+</main>
+</div>
+<dialog id="welcome" class="welcome">
+<form id="welcomeForm">
+<img src="./img/logo.png" alt="EncontraA!">
+<h1>Digite seu endereço</h1>
+<input id="welcomeEndereco" aria-label="Seu endereço" placeholder="Av. Brasil, 500" autocomplete="street-address">
+<div class="welcome-radius">
+<span class="location-icon" aria-hidden="true">
+</span>
+<input id="welcomeRaio" type="range" min="1" max="15" value="5" aria-label="Raio em quilômetros">
+<output id="welcomeOutput" for="welcomeRaio">5 km</output>
+</div>
+<select id="welcomeCombustivel" aria-label="Selecione o combustível">
+<option value="">▣ Selecione o combustível</option>
+<option value="gasolina">Gasolina</option>
+<option value="etanol">Etanol</option>
+<option value="diesel">Diesel</option>
+</select>
+<button class="buscar" type="submit">
+<span class="search-icon" aria-hidden="true">
+</span>Buscar</button>
+<p id="welcomeError" role="status">
+</p>
+</form>
+</dialog>
+<dialog id="infoDialog" class="info-dialog">
+<button id="closeInfo" aria-label="Fechar" class="close-info">×</button>
+<h2 id="infoTitle">
+</h2>
+<p id="infoText">
+</p>
+</dialog>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+<script type="module" src="./scripts/App.js">
+</script>
 </body>
-
 </html>

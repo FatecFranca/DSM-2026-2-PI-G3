@@ -1,700 +1,1207 @@
-/* ========================================
-   FONTE E VARIÁVEIS
-   ======================================== */
-/* Opcional, no <head>:
-   <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"> */
-
 :root {
-    --laranja: #f28c28;
-    --verde: #8ed900;
-    --verde-escuro: #7cc000;
-    --verde-circulo: rgba(142, 217, 0, 0.22);
-    --cor-fundo: #f4f4f4;
-    --cor-texto: #333;
-    --cor-texto-secundario: #777;
-    --cor-branco: #fff;
-    --cor-borda: #dcdcdc;
-    --cor-link: #1f7ae0;
-    --cor-erro: #c0392b;
-    --cor-gasolina: #f28c28;
-    --cor-etanol: #8ed900;
-    --cor-diesel: #7a7a7a;
-    --sombra-card: 0 4px 12px rgba(0, 0, 0, 0.12);
-    --raio: 10px;
-    --transicao: 0.2s ease;
+    --green:#80e000;
+    --orange:#ff7915;
+    --gray:#f4f4f4;
+    --text:#454545
 }
 
-/* ========================================
-   BASE
-   ======================================== */
-*,
-*::before,
-*::after {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {
+    box-sizing:border-box
 }
 
 body {
-    font-family: "Fira Sans", Arial, sans-serif;
-    background: var(--cor-branco);
-    color: var(--cor-texto);
-    font-size: 15px;
-    line-height: 1.4;
+    margin:0;
+    background:#fff;
+    color:var(--text);
+    font:14px 'Arial Narrow',Arial,sans-serif
+}
+
+button,input,select {
+    font:inherit
+}
+
+button,a,input,select {
+    -webkit-tap-highlight-color:transparent
+}
+
+button {
+    cursor:pointer
+}
+
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible {
+    outline:2px solid var(--orange);
+    outline-offset:4px
 }
 
 img {
-    max-width: 100%;
-    display: block;
+    display:block;
+    max-width:100%
 }
 
-button,
-input,
-select {
-    font: inherit;
-}
-
-.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-}
-
-/* ========================================
-   TOPO (LOGO, MENU E AVATAR)
-   ======================================== */
 .topo {
-    height: 72px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    background: var(--cor-fundo);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-    position: relative;
-    z-index: 10;
+    height:74px;
+    background:var(--gray);
+    display:flex;
+    align-items:center;
+    padding:0 7%;
+    gap:8%;
+    position:relative;
+    z-index:2
 }
 
-.logo img {
-    height: 44px;
-    width: auto;
+.logo {
+    width:140px;
+    flex-shrink:0
 }
 
 .menu {
-    display: flex;
-    gap: 8px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex:1;
+    gap:20px
 }
 
-.menu a {
-    padding: 10px 28px;
-    border-radius: 24px;
-    color: #444;
-    text-decoration: none;
-    font-size: 18px;
-    font-weight: 500;
-    transition: background var(--transicao);
+.menu a,.menu button {
+    border:0;
+    background:none;
+    color:#333;
+    text-decoration:none;
+    font-family:Georgia,serif;
+    padding:9px 25px;
+    font-size:16px
 }
 
-.menu a:hover {
-    background: rgba(242, 140, 40, 0.12);
-}
-
-.menu a.ativo {
-    background: var(--laranja);
-    color: var(--cor-branco);
+.menu .ativo {
+    background:#fb8619;
+    color:white;
+    border-radius:16px
 }
 
 .avatar {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: #8a8a8a;
-    overflow: hidden;
+    border:0;
+    padding:0;
+    width:47px;
+    height:47px;
+    border-radius:50%;
+    overflow:hidden;
+    background:#858585;
+    flex-shrink:0
 }
 
 .avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    width:100%;
+    height:100%;
+    object-fit:cover
 }
 
-/* ========================================
-   LAYOUT GERAL (BARRA LATERAL + CONTEÚDO)
-   ======================================== */
 .app {
-    display: grid;
-    grid-template-columns: 300px 1fr;
-    min-height: calc(100vh - 72px);
+    display:grid;
+    grid-template-columns:280px minmax(0,1fr);
+    min-height:calc(100vh - 74px)
 }
 
-.conteudo {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-}
-
-/* ========================================
-   BARRA LATERAL
-   ======================================== */
 .sidebar {
-    background: var(--cor-fundo);
-    padding: 28px 24px;
-    border-right: 1px solid #e6e6e6;
-    display: flex;
-    flex-direction: column;
+    padding:24px 38px;
+    background:var(--gray)
 }
 
 .grupo {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 22px 0;
-    border-bottom: 1px solid var(--cor-borda);
+    padding:0 0 36px;
+    margin-bottom:32px;
+    border-bottom:3px solid #e6e6e6
 }
 
-.grupo:first-child {
-    padding-top: 0;
+.grupo h2 {
+    font-size:16px;
+    font-weight:400;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:0 0 12px
 }
 
-.grupo:last-child {
-    border-bottom: none;
-}
-
-.grupo-titulo {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--cor-texto);
-}
-
-.grupo label {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    font-weight: 500;
-    color: #444;
-}
-
-/* Busca de endereço */
 .localizacao-manual {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    position:relative
 }
 
-.localizacao-manual input[type="text"],
-.grupo select {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1px solid var(--cor-borda);
-    border-radius: 12px;
-    background: var(--cor-branco);
-    font-size: 15px;
-    transition: border-color var(--transicao);
+input:not([type=range]):not([type=checkbox]),select {
+    border:1px solid #c7c7c7;
+    border-radius:15px;
+    padding:9px 13px;
+    background:transparent;
+    width:100%;
+    font-size:13px;
+    color:#555
 }
 
-.localizacao-manual input[type="text"]:focus,
-.grupo select:focus {
-    outline: none;
-    border-color: var(--verde);
+input::placeholder {
+    color:#aaa
 }
 
-.sugestoes-box {
-    position: absolute;
-    top: 48px;                  /* ajuste se a altura do input mudar */
-    left: 0;
-    right: 0;
-    background: var(--cor-branco);
-    border: 1px solid var(--cor-borda);
-    border-radius: var(--raio);
-    box-shadow: var(--sombra-card);
-    max-height: 180px;
-    overflow-y: auto;
-    z-index: 1000;
+.search-icon {
+    display:inline-block;
+    width:15px;
+    height:15px;
+    border:1.5px solid var(--green);
+    border-radius:50%;
+    position:relative;
+    flex-shrink:0
 }
 
-.sugestao-item {
-    padding: 10px 12px;
-    cursor: pointer;
-    border-bottom: 1px solid #eee;
-    font-size: 14px;
+.search-icon:after {
+    content:'';
+    position:absolute;
+    width:6px;
+    height:1.5px;
+    right:-5px;
+    bottom:-2px;
+    transform:rotate(48deg);
+    background:var(--green)
 }
 
-.sugestao-item:last-child {
-    border-bottom: none;
+.location-icon {
+    display:inline-block;
+    width:17px;
+    height:22px;
+    background:var(--green);
+    clip-path:polygon(50% 100%,7% 45%,0 25%,14% 7%,50% 0,86% 7%,100% 25%,93% 45%);
+    position:relative;
+    flex-shrink:0
 }
 
-.sugestao-item:hover {
-    background: #f0f0f0;
+.location-icon:after {
+    content:'';
+    position:absolute;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:white;
+    left:5px;
+    top:5px
 }
 
-/* Raio de busca (slider) */
-#selRaio {
-    width: 100%;
-    accent-color: var(--verde);
-    cursor: pointer;
+.raio-wrapper {
+    display:flex;
+    align-items:center;
+    gap:18px
 }
 
-/* Checkbox "apenas ANP" */
-.switch-label {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    font-weight: 500;
-    cursor: pointer;
+.raio-wrapper output {
+    font-size:12px;
+    white-space:nowrap
 }
 
-.switch-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--verde);
-    cursor: pointer;
+input[type=range] {
+    accent-color:var(--green);
+    height:5px;
+    min-width:0;
+    width:100%;
+    cursor:pointer;
+    margin:8px 0
 }
 
-/* ========================================
-   BOTÕES
-   ======================================== */
-button {
-    border: none;
-    padding: 12px 20px;
-    border-radius: var(--raio);
-    background: var(--verde);
-    color: var(--cor-branco);
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background var(--transicao);
+.pump {
+    color:var(--green);
+    font-size:23px;
+    line-height:1
 }
 
-button:hover {
-    background: var(--verde-escuro);
+.fuel-group {
+    border:0;
+    margin-bottom:0;
+    padding-bottom:0
 }
 
-button:disabled {
-    background: #c9c9c9;
-    cursor: not-allowed;
+.fuel {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin:15px 0;
+    font-size:13px
 }
 
-.sidebar button {
-    width: 100%;
+.fuel>span {
+    display:flex;
+    align-items:center;
+    gap:10px
 }
 
-/* ========================================
-   STATUS E MAPA
-   ======================================== */
-#status {
-    padding: 14px 32px 0;
-    color: var(--cor-texto-secundario);
-    font-size: 14px;
-    min-height: 22px;
+.fuel input {
+    accent-color:var(--green);
+    width:16px;
+    height:16px;
+    margin:0
+}
+
+.fuel:last-of-type input {
+    accent-color:#858585
+}
+
+.drop {
+    display:inline-block;
+    width:23px;
+    height:23px;
+    border-radius:50%;
+    background:var(--fuel-color);
+    position:relative
+}
+
+.gasolina {
+    --fuel-color:#ff8518
+}
+
+.etanol {
+    --fuel-color:#80cf21
+}
+
+.diesel {
+    --fuel-color:#808080
+}
+
+.drop:after {
+    content:'';
+    position:absolute;
+    width:9px;
+    height:12px;
+    background:white;
+    border-radius:8px 8px 8px 2px;
+    transform:rotate(30deg);
+    left:7px;
+    top:5px
+}
+
+.buscar {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    border:0;
+    color:white;
+    background:var(--green);
+    border-radius:15px;
+    padding:9px 22px;
+    font-size:14px;
+    min-width:115px;
+    margin:32px auto 0
+}
+
+.buscar:hover {
+    background:#6cc000
+}
+
+.buscar .search-icon {
+    border-color:white;
+    width:12px;
+    height:12px
+}
+
+.buscar .search-icon:after {
+    background:white
+}
+
+.advanced {
+    margin-top:28px;
+    color:#777;
+    font-size:12px
+}
+
+.advanced summary {
+    cursor:pointer
+}
+
+.advanced label {
+    display:block;
+    margin-top:12px
+}
+
+.advanced button {
+    margin-top:12px;
+    border:0;
+    border-radius:12px;
+    padding:8px;
+    background:#e5e5e5
+}
+
+.advanced select {
+    margin-top:6px
+}
+
+.conteudo {
+    min-width:0
+}
+
+.map-region {
+    position:relative
 }
 
 #map {
-    width: 100%;
-    height: 520px;
-    margin-top: 12px;
-    position: relative;
-    z-index: 1;
+    width:100%;
+    height:410px;
+    z-index:0;
+    background:#e5ebdd
 }
 
-/* ========================================
-   LISTA DE CARDS
-   ======================================== */
+.toggle-filtros {
+    position:absolute;
+    left:-22px;
+    bottom:-7px;
+    border:3px solid white;
+    border-radius:50%;
+    width:38px;
+    height:38px;
+    background:var(--orange);
+    color:white;
+    font:36px/24px Arial;
+    z-index:1;
+    padding:0
+}
+
 .lista-container {
-    padding: 24px 32px 40px;
-}
-
-.lista-container h2 {
-    font-size: 18px;
-    margin-bottom: 18px;
-    color: var(--cor-texto);
+    padding:26px 20px 28px
 }
 
 #postos {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 24px;
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:34px 16px
 }
 
-#postos > p {
-    grid-column: 1 / -1;
-    color: var(--cor-texto-secundario);
-}
-
-/* ========================================
-   CARD DO POSTO
-   ======================================== */
 .posto {
-    display: flex;
-    flex-direction: column;
-    background: var(--cor-branco);
-    border-radius: 14px;
-    box-shadow: var(--sombra-card);
-    padding: 0 16px 16px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform var(--transicao), box-shadow var(--transicao);
+    border:1px solid #d4d4d4;
+    border-radius:12px;
+    overflow:hidden;
+    background:#f5f5f5;
+    box-shadow:0 2px 5px #0003;
+    min-width:0;
+    cursor:pointer;
+    padding:0 20px 14px
 }
 
-.posto:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
-}
-
-/* Topo colorido com a marca (cor pela bandeira; nomes conforme o JSON da ANP) */
 .posto-topo {
-    height: 120px;
-    margin: 0 -16px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #8a8a8a;
+    height:94px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 -20px 10px;
+    background:#b1b1b1
 }
 
-.posto-topo[data-marca="raizen"] {
-    background: #fcd62d;
+.posto-topo[data-marca=raizen],.posto-topo[data-marca=shell] {
+    background:#ffdf32
 }
 
-.posto-topo[data-marca="vibra"] {
-    background: #00a043;
+.posto-topo[data-marca=ipiranga] {
+    background:#ff6800
 }
 
-.posto-topo[data-marca="ipiranga"] {
-    background: #ff6600;
+.posto-topo[data-marca=vibra],.posto-topo[data-marca=petrobras] {
+    background:#009d38
 }
 
-.posto-topo[data-marca="ale"] {
-    background: #1d1d8f;
+.posto-topo[data-marca=ale],.posto-topo[data-marca=alesat] {
+    background:#21158d
 }
 
-/* Logo: texto por padrão. Se tiver imagens da marca, use <img> dentro de .logo-marca */
 .logo-marca {
-    background: var(--cor-branco);
-    color: #333;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 14px;
-    min-width: 120px;
-    text-align: center;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    background:white;
+    border-radius:5px;
+    padding:4px 8px;
+    font-weight:bold;
+    font-size:20px;
+    max-width:90%;
+    color:#555
 }
 
 .logo-marca img {
-    max-height: 56px;
-    width: auto;
-    margin: 0 auto;
+    width:60px;
+    height:54px;
+    object-fit:contain
 }
 
-/* Nome e distância lado a lado */
 .posto-cabecalho {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:5px
 }
 
 .posto h3 {
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--cor-texto);
+    font-size:11px;
+    font-weight:400;
+    margin:0
+}
+
+.posto h3:before {
+    content:'▣';
+    font-size:16px;
+    margin-right:5px
 }
 
 .distancia {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    font-weight: 600;
-    white-space: nowrap;
-    color: var(--cor-texto);
+    font-size:10px;
+    white-space:nowrap
 }
 
-.distancia::before {
-    content: "📍";
-    font-size: 13px;
+.distancia:before {
+    content:'♦';
+    margin-right:3px
 }
 
 .endereco {
-    margin: 6px 0 14px;
-    font-size: 12px;
-    color: var(--cor-texto-secundario);
-    line-height: 1.4;
+    font-size:8px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    margin:5px 0 12px
 }
 
-/* Lista de combustíveis em colunas */
 .lista-produtos {
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    gap: 6px;
-    padding: 12px 6px;
-    background: var(--cor-fundo);
-    border-radius: var(--raio);
+    display:flex;
+    justify-content:space-between;
+    gap:5px;
+    list-style:none;
+    margin:0;
+    padding:0
 }
 
 .lista-produtos li {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    text-align: center;
-    font-size: 11px;
-    color: var(--cor-texto-secundario);
+    font-size:8px;
+    display:grid;
+    grid-template-columns:9px 1fr;
+    column-gap:3px;
+    align-items:center
 }
 
-.lista-produtos li::before {
-    content: "";
-    width: 14px;
-    height: 14px;
-    margin-bottom: 4px;
-    border-radius: 50%;
-    background: #999;
-}
-
-.lista-produtos li.gasolina::before {
-    background: var(--cor-gasolina);
-}
-
-.lista-produtos li.etanol::before {
-    background: var(--cor-etanol);
-}
-
-.lista-produtos li.diesel::before {
-    background: var(--cor-diesel);
-}
-
-.nome-combustivel {
-    font-weight: 500;
-    text-transform: capitalize;
+.lista-produtos li:before {
+    content:'';
+    width:8px;
+    height:8px;
+    border:2px solid var(--fuel-color);
+    border-radius:50%
 }
 
 .preco {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--cor-texto);
+    grid-column:2;
+    font-size:8px
 }
 
 .data-coleta {
-    font-size: 10px;
-    color: #999;
+    display:none
+}
+
+.posto>a {
+    display:none
 }
 
 .sem-preco {
-    padding: 10px;
-    background: var(--cor-fundo);
-    border-radius: var(--raio);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--cor-erro);
-    text-align: center;
+    font-size:10px;
+    color:#777
 }
 
-.posto a {
-    margin-top: 12px;
-    align-self: flex-start;
-    font-size: 13px;
-    color: var(--cor-link);
-    text-decoration: none;
+.posto:hover {
+    box-shadow:0 3px 9px #0004
 }
 
-.posto a:hover,
-.posto a:focus-visible {
-    text-decoration: underline;
+.posto:focus-visible {
+    outline:2px solid var(--orange)
 }
 
-/* ========================================
-   PINS DO MAPA
-   ======================================== */
-/* Pin do posto com o preço (laranja, como na tela de referência) */
+#status {
+    font-size:11px;
+    color:#888;
+    margin:18px 0 0
+}
+
 .pin-preco span {
-    display: block;
-    width: 72px;
-    height: 26px;
-    line-height: 26px;
-    text-align: center;
-    background: var(--laranja);
-    color: var(--cor-branco);
-    border-radius: 16px;
-    font: 700 12px/26px Arial, sans-serif;
-    white-space: nowrap;
-    overflow: hidden;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    display:block;
+    width:17px;
+    height:23px;
+    background:var(--orange);
+    clip-path:polygon(50% 100%,5% 45%,0 25%,14% 7%,50% 0,86% 7%,100% 25%,95% 45%);
+    position:relative
 }
 
-/* Ponto do usuário (verde) */
+.pin-preco span:after {
+    content:'';
+    position:absolute;
+    left:5px;
+    top:5px;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:white
+}
+
 .pin-usuario span {
-    display: block;
-    width: 12px;
-    height: 12px;
-    background: var(--verde);
-    border: 2px solid var(--cor-branco);
-    border-radius: 50%;
-    box-shadow: 0 0 0 6px rgba(142, 217, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.3);
+    display:block;
+    width:15px;
+    height:15px;
+    background:var(--green);
+    border:3px solid white;
+    border-radius:50%
 }
 
-.popup-posto {
-    font-size: 14px;
-    line-height: 1.4;
+.leaflet-control-zoom {
+    display:none
 }
 
-.popup-posto strong {
-    font-size: 15px;
-    color: var(--cor-texto);
+.leaflet-container {
+    font-family:Arial,sans-serif
 }
 
-.leaflet-popup-content-wrapper {
-    border-radius: 12px;
+.app.collapsed {
+    grid-template-columns:30px minmax(0,1fr)
 }
 
-/* ========================================
-   MODAL DE BOAS-VINDAS (opcional)
-   Precisa de HTML e de um pouco de JS para abrir e fechar.
-   ======================================== */
-.modal-fundo {
-    position: fixed;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(2px);
-    z-index: 2000;
+.collapsed .sidebar {
+    display:none
 }
 
-.modal-fundo[hidden] {
-    display: none;
+.collapsed .conteudo {
+    grid-column:2
 }
 
-.modal {
-    width: min(440px, 100%);
-    padding: 36px 32px;
-    background: var(--cor-branco);
-    border-radius: 28px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 18px;
-    text-align: center;
+.collapsed #postos {
+    grid-template-columns:repeat(4,minmax(0,1fr))
 }
 
-.modal h2 {
-    font-size: 22px;
-    font-weight: 500;
-    color: var(--cor-texto);
+.collapsed .lista-container {
+    padding:26px 40px 28px 30px
 }
 
-.modal input[type="text"],
-.modal select {
-    width: 100%;
-    padding: 14px 18px;
-    border: 1px solid #ccc;
-    border-radius: 14px;
-    background: var(--cor-branco);
-    font-size: 16px;
+.collapsed .toggle-filtros {
+    left:-19px
 }
 
-/* ========================================
-   ACESSIBILIDADE
-   ======================================== */
-:focus-visible {
-    outline: 3px solid #4d90fe;
-    outline-offset: 2px;
+.welcome {
+    border:0;
+    border-radius:36px;
+    width:385px;
+    padding:32px 44px 28px;
+    box-shadow:0 2px 15px #0003;
+    color:var(--text)
 }
 
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        transition-duration: 0.01ms !important;
-        animation-duration: 0.01ms !important;
+.welcome::backdrop {
+    background:rgba(255,255,255,.89)
+}
+
+.welcome form {
+    display:flex;
+    align-items:center;
+    flex-direction:column
+}
+
+.welcome img {
+    width:205px;
+    height:auto
+}
+
+.welcome h1 {
+    font-size:18px;
+    font-weight:400;
+    margin:18px 0
+}
+
+.welcome input:not([type=range]) {
+    background:white
+}
+
+.welcome-radius {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    width:85%;
+    margin:22px 0
+}
+
+.welcome-radius output {
+    white-space:nowrap;
+    font-size:14px
+}
+
+.welcome select {
+    width:84%;
+    color:#aaa
+}
+
+.welcome .buscar {
+    margin-top:22px
+}
+
+.welcome p:empty {
+    display:none
+}
+
+.welcome p {
+    font-size:12px;
+    color:#b54d18
+}
+
+.info-dialog {
+    border:0;
+    border-radius:20px;
+    padding:32px;
+    max-width:430px;
+    line-height:1.6;
+    box-shadow:0 4px 30px #0003
+}
+
+.info-dialog::backdrop {
+    background:#ffffffc9
+}
+
+.close-info {
+    float:right;
+    border:0;
+    background:none;
+    font-size:24px
+}
+
+.sugestoes-box:not(:empty) {
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    background:white;
+    border-radius:8px;
+    box-shadow:0 3px 12px #0002;
+    z-index:5;
+    max-height:240px;
+    overflow:auto
+}
+
+.sugestao-item {
+    padding:12px;
+    font-size:12px;
+    cursor:pointer
+}
+
+.sugestao-item:hover {
+    background:#ecffd8
+}
+
+@media(min-width:1450px) {
+    #map {
+        height:48vh
+    }
+    .lista-container {
+        padding-left:35px;
+        padding-right:35px
+    }
+    .posto-topo {
+        height:120px
     }
 }
 
-/* ========================================
-   RESPONSIVO
-   ======================================== */
-@media (max-width: 900px) {
+@media(max-width:800px) {
     .topo {
-        padding: 0 16px;
+        height:58px;
+        padding:0 7%;
+        gap:8%
     }
+    .logo {
+        width:105px
+    }
+    .menu a,.menu button {
+        font-size:12px;
+        padding:6px 17px
+    }
+    .avatar {
+        width:35px;
+        height:35px
+    }
+    .app {
+        grid-template-columns:215px minmax(0,1fr);
+        min-height:calc(100vh - 58px)
+    }
+    .sidebar {
+        padding:20px 28px
+    }
+    .grupo h2 {
+        font-size:13px
+    }
+    .grupo {
+        margin-bottom:26px;
+        padding-bottom:28px
+    }
+    #map {
+        height:330px
+    }
+    .posto {
+        padding:0 12px 12px
+    }
+    .posto-topo {
+        margin:0 -12px 9px;
+        height:76px
+    }
+    .posto h3 {
+        font-size:9px
+    }
+    .distancia {
+        font-size:8px
+    }
+    .lista-produtos li,.preco {
+        font-size:6px
+    }
+    .endereco {
+        font-size:6px
+    }
+    .logo-marca img {
+        width:48px;
+        height:42px
+    }
+    #postos {
+        gap:28px 13px
+    }
+    .lista-container {
+        padding:23px 15px
+    }
+    .collapsed .lista-container {
+        padding:23px
+    }
+    .advanced {
+        font-size:10px
+    }
+}
 
-    .menu a {
-        padding: 8px 14px;
-        font-size: 16px;
+@media(max-width:580px) {
+    .topo {
+        height:48px;
+        padding:0 7%;
+        gap:6%
+    }
+    .logo {
+        width:78px
+    }
+    .menu {
+        gap:10px
+    }
+    .menu a,.menu button {
+        font-size:10px;
+        padding:5px 13px
+    }
+    .avatar {
+        width:28px;
+        height:28px
+    }
+    .app {
+        grid-template-columns:145px minmax(0,1fr)
+    }
+    .sidebar {
+        padding:14px 18px
+    }
+    .grupo h2 {
+        font-size:10px;
+        gap:6px
+    }
+    .grupo {
+        padding-bottom:20px;
+        margin-bottom:20px
+    }
+    .fuel {
+        font-size:9px;
+        margin:12px 0
+    }
+    .drop {
+        width:17px;
+        height:17px
+    }
+    .drop:after {
+        width:7px;
+        height:9px;
+        left:5px;
+        top:4px
+    }
+    .fuel input {
+        width:12px;
+        height:12px
+    }
+    .fuel>span {
+        gap:6px
+    }
+    input:not([type=range]):not([type=checkbox]),select {
+        font-size:10px;
+        padding:6px 9px
+    }
+    .raio-wrapper {
+        gap:12px
+    }
+    .raio-wrapper output {
+        font-size:9px
+    }
+    .buscar {
+        font-size:10px;
+        padding:6px 12px;
+        min-width:80px;
+        margin-top:25px
+    }
+    .location-icon {
+        width:13px;
+        height:18px
+    }
+    .location-icon:after {
+        width:5px;
+        height:5px;
+        left:4px;
+        top:4px
+    }
+    .search-icon {
+        width:12px;
+        height:12px
+    }
+    .pump {
+        font-size:17px
+    }
+    #map {
+        height:clamp(230px,42vw,330px)
+    }
+    .posto {
+        border-radius:8px;
+        padding:0 10px 9px
+    }
+    .posto-topo {
+        height:62px;
+        margin:0 -10px 7px
+    }
+    .posto h3 {
+        font-size:7px
+    }
+    .posto h3:before {
+        font-size:10px;
+        margin-right:2px
+    }
+    .distancia {
+        font-size:6px
+    }
+    .endereco {
+        font-size:5px;
+        margin:4px 0 8px
+    }
+    .lista-produtos li,.preco {
+        font-size:5px
+    }
+    .lista-produtos li {
+        grid-template-columns:6px 1fr;
+        gap:2px
+    }
+    .lista-produtos li:before {
+        width:6px;
+        height:6px;
+        border-width:1.5px
+    }
+    .logo-marca {
+        padding:3px 5px;
+        font-size:12px
+    }
+    .logo-marca img {
+        width:38px;
+        height:34px
+    }
+    .lista-container {
+        padding:18px 10px
+    }
+    #postos {
+        gap:24px 10px
+    }
+    .toggle-filtros {
+        width:29px;
+        height:29px;
+        font-size:28px;
+        line-height:19px;
+        left:-15px
+    }
+    .app.collapsed {
+        grid-template-columns:24px minmax(0,1fr)
+    }
+    .collapsed .lista-container {
+        padding:18px 25px 18px 16px
+    }
+    .collapsed .toggle-filtros {
+        left:-15px
+    }
+    .welcome {
+        width:290px;
+        padding:25px 32px;
+        border-radius:28px
+    }
+    .welcome img {
+        width:155px
+    }
+    .welcome h1 {
+        font-size:14px;
+        margin:14px 0
+    }
+    .welcome-radius {
+        margin:18px 0
+    }
+    .welcome-radius output {
+        font-size:11px
+    }
+    .welcome .buscar {
+        margin-top:17px
+    }
+    .advanced {
+        font-size:9px
+    }
+    #status {
+        font-size:9px
+    }
+}
+
+@media(max-width:420px) {
+    .topo {
+        padding:0 14px;
+        gap:16px
+    }
+    .menu {
+        gap:3px
+    }
+    .menu a,.menu button {
+        padding:5px 9px
+    }
+    .app {
+        grid-template-columns:120px minmax(0,1fr)
+    }
+    .sidebar {
+        padding:15px 12px
+    }
+    #postos {
+        grid-template-columns:repeat(2,minmax(0,1fr))
+    }
+    .collapsed #postos {
+        grid-template-columns:repeat(2,minmax(0,1fr))
+    }
+    .collapsed .lista-container {
+        padding:18px 15px
+    }
+    .lista-produtos li,.preco {
+        font-size:6px
+    }
+}
+
+@media(prefers-reduced-motion:reduce) {
+    * {
+        scroll-behavior:auto!important
+    }
+}
+
+
+/* Preços e datas legíveis, inclusive quando a lateral está recolhida. */
+.posto h3 {
+    font-size: 13px;
+}
+
+.endereco, .distancia, .sem-preco {
+    font-size: 11px;
+}
+
+.lista-produtos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 12px 8px;
+}
+
+.lista-produtos li {
+    font-size: 11px;
+    align-content: start;
+}
+
+.preco {
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 4px;
+    color: #333;
+}
+
+.data-coleta {
+    display: block;
+    grid-column: 1 / -1;
+    font-size: 10px;
+    margin-top: 4px;
+    color: #666;
+}
+
+/* Preço permanente ao lado do alfinete. */
+.leaflet-tooltip.preco-mapa {
+    padding: 3px 5px;
+    border: 1px solid #ffd4b5;
+    border-radius: 6px;
+    background: white;
+    color: #555;
+    font-size: 11px;
+    line-height: 14px;
+    box-shadow: 0 1px 3px #0002;
+}
+
+.aviso-mapa {
+    font-size: 11px;
+    line-height: 1.5;
+    color: #666;
+    margin-top: 18px;
+}
+
+#btnLocalizacao {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 7px 5px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    background: #e9e9e9;
+    color: #555;
+    font-size: 11px;
+}
+
+#btnLocalizacao:hover {
+    background: #def3c7;
+}
+
+#btnLocalizacao:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.ordenacao-resultados {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 18px;
+}
+
+.ordenacao-resultados label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+}
+
+.ordenacao-resultados select {
+    width: 155px;
+    background: white;
+}
+
+/* Logos originais preservam suas proporções. */
+.logo-marca img {
+    width: 105px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.posto-topo[data-marca="branca"],
+.posto-topo[data-marca="branca"] .logo-marca {
+    background: white;
+}
+
+.posto-topo[data-marca="sem-bandeira"],
+.posto-topo[data-marca="sem-bandeira"] .logo-marca {
+    background: #b1b1b1;
+    color: #333;
+}
+
+.menu-bandeiras {
+    position: relative;
+    margin-top: 6px;
+    font-size: 12px;
+}
+
+.menu-bandeiras summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border: 1px solid #c7c7c7;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.menu-bandeiras summary::after {
+    content: '▾';
+    margin-left: auto;
+}
+
+#listaBandeiras {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    max-height: 270px;
+    overflow: auto;
+    padding: 5px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px #0002;
+}
+
+#listaBandeiras button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin: 0;
+    padding: 7px;
+    border: 0;
+    background: white;
+    color: #444;
+    text-align: left;
+    font-size: 11px;
+}
+
+#listaBandeiras button:hover {
+    background: #f0f8e9;
+}
+
+.mini-bandeira {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    min-width: 42px;
+    height: 30px;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    font-size: 8px;
+}
+
+.mini-bandeira img {
+    width: 36px;
+    height: 26px;
+    object-fit: contain;
+}
+
+.logo-original {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.mini-bandeira .logo-original {
+    width: 100%;
+    height: 100%;
+    padding: 2px;
+}
+
+.mini-bandeira .selo-sem-bandeira {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #b1b1b1;
+}
+
+/* Desktop: mesma proporção visual do navegador em 90%. */
+@media (min-width: 801px) {
+    body {
+        zoom: 0.9;
     }
 
     .app {
-        grid-template-columns: 1fr;
+        min-height: calc(100vh / 0.9 - 74px);
     }
-
-    .sidebar {
-        border-right: none;
-        border-bottom: 1px solid #e6e6e6;
-    }
-
-    #map {
-        height: 420px;
-    }
-
-    .lista-container {
-        padding: 20px 16px 32px;
-    }
-}
-
-@media (max-width: 560px) {
-    .menu a:not(.ativo) {
-        display: none;
-    }
-
-    #map {
-        height: 340px;
-    }
-
-    #postos {
-        grid-template-columns: 1fr;
-    }
-}
-/* ========================================
-   BALÃO DO RAIO
-   ======================================== */
-.raio-wrapper {
-    position: relative;
-    padding-top: 36px;   /* espaço para o balão acima do slider */
-}
-
-.raio-balao {
-    position: absolute;
-    top: 0;
-    transform: translateX(-50%);
-    padding: 4px 10px;
-    background: var(--verde);
-    color: var(--cor-branco);
-    font-size: 13px;
-    font-weight: 600;
-    border-radius: 8px;
-    white-space: nowrap;
-    pointer-events: none;
-}
-
-/* Setinha do balão apontando para o slider */
-.raio-balao::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: -5px;
-    transform: translateX(-50%);
-    border: 5px solid transparent;
-    border-top-color: var(--verde);
-    border-bottom: 0;
 }

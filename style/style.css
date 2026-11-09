@@ -491,7 +491,19 @@ input[type=range] {
 }
 
 .posto>a {
-    display:none
+    display: inline-block;
+    margin-top: 14px;
+    padding: 7px 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    color: #444;
+    font-size: 12px;
+    text-decoration: none;
+}
+
+.posto>a:hover {
+    border-color: var(--green);
 }
 
 .sem-preco {

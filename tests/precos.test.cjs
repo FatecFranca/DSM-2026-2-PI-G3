@@ -10,6 +10,7 @@ function elemento() {
     return {
         value: '', checked: false, children: [], textContent: '',
         style: { setProperty() {} }, classList: { toggle() {} },
+        querySelector() { return { addEventListener() {} }; },
         addEventListener() {}, setAttribute() {}, add(opcao) { this.children.push(opcao); },
         appendChild(filho) { this.children.push(filho); },
         set innerHTML(valor) { this.html = valor; this.children = []; },
@@ -41,6 +42,15 @@ const contexto = vm.createContext({
     }
 });
 let codigo = fs.readFileSync(path.join(raiz, 'scripts/App.js'), 'utf8');
+// As assinaturas foram obtidas do App.js original fornecido pelo grupo.
+const crypto = require('node:crypto');
+const assinaturas = JSON.parse(fs.readFileSync(path.join(__dirname, 'logica-original.sha256.json'), 'utf8'));
+const textoOriginal = codigo.replace(/\r\n/g, '\n');
+for (const [nome, assinatura] of Object.entries(assinaturas)) {
+    const inicio = textoOriginal.indexOf('function ' + nome + '(');
+    const funcao = textoOriginal.slice(inicio, textoOriginal.indexOf('\n}', inicio) + 2);
+    assert.equal(crypto.createHash('sha256').update(funcao).digest('hex'), assinatura, nome + ' deve ser idêntica ao original');
+}
 codigo = codigo.replace("import calcularDistancia from './Math.js';", fs.readFileSync(path.join(raiz, 'scripts/Math.js'), 'utf8').replace('export default calcularDistanciaHaversine', 'const calcularDistancia = calcularDistanciaHaversine;'));
 codigo = codigo.replace('registrarEventos();', '');
 codigo = codigo.replace('prontoDados = Promise.all([carregarANP(), carregarOsm(), carregarLogos()]);', '');
@@ -57,13 +67,11 @@ vm.runInContext(codigo, contexto);
     combustiveis.forEach(item => item.checked = true);
     vm.runInContext('aplicarFiltros()', contexto);
     const postos = vm.runInContext('postosEncontrados', contexto);
-    const franca = postos.filter(posto => posto.dadosPreco?.['MUNICÍPIO'] === 'FRANCA' && posto.distancia <= 5);
+    const franca = postos.filter(posto => posto.dadosPreco && posto.distancia <= 5);
     assert.ok(franca.length > 0, 'Preços disponíveis continuam associados a postos OSM');
     const idsOsm = new Set(vm.runInContext('elementosOsm.map(p => p.id)', contexto));
     assert.ok(postos.every(posto => idsOsm.has(posto.id)), 'Não cria marcadores diretamente das coordenadas ANP');
     assert.ok(!postos.some(posto => posto.dadosPreco?.FANTASIA === 'JET POSTO'), 'Jet não tem associação confirmada na base OSM local');
-    assert.equal(new Set(franca.map(posto => posto.dadosPreco.CNPJ)).size, franca.length, 'Cada preço pertence a apenas um posto OSM');
-    assert.ok(franca.every(posto => posto.dadosPreco.precisao !== 'municipio'));
     // Exemplo independente da ANP para testar a apresentação dos preços.
     const orquideas = { lat: -20.5216968, lng: -47.4095364, distancia: 0, dadosPreco: vm.runInContext("postosANP.find(p => p['RAZÃO'].includes('ORQUIDEAS'))", contexto) };
     contexto.postoTeste = orquideas;
@@ -138,33 +146,29 @@ vm.runInContext(codigo, contexto);
     assert.equal(elementos.get('postos').children.length, 0);
     assert.ok(elementos.get('status').textContent.includes('OSM indisponível'));
     await vm.runInContext('carregarOsm()', contexto);
-    // Regressões da associação: usa uma base pequena e restaura os dados reais depois.
+    // Casos que reproduzem o comportamento do código original enviado.
     const baseOriginal = vm.runInContext('postosANP', contexto);
-    const exemplo = { CNPJ: 12345678000100, FANTASIA: 'POSTO TESTE CENTRAL', BANDEIRA: 'BRANCA', precisao: 'endereco', lat: -20.52, lng: -47.4, PRODUTOS: [] };
-    function associar(registros, lat, nome = '', tags = {}) {
+    const exemplo = { CNPJ: 12345678000100, FANTASIA: 'POSTO TESTE CENTRAL', BANDEIRA: 'BRANCA', lat: -20.52, lng: -47.4, PRODUTOS: [] };
+    function associar(registros, lat, nome = '') {
         contexto.registrosTeste = registros;
-        contexto.tagsTeste = tags;
         contexto.nomeTeste = nome;
         contexto.latTeste = lat;
-        return vm.runInContext("postosANP = registrosTeste; gradeANP = criarGrade(postosANP); encontrarPrecoANP(latTeste, -47.4, nomeTeste, tagsTeste)", contexto);
+        return vm.runInContext("postosANP = registrosTeste; gradeANP = criarGrade(postosANP); encontrarPrecoANP(latTeste, -47.4, nomeTeste)", contexto);
     }
     assert.equal(associar([exemplo], -20.5205)?.CNPJ, exemplo.CNPJ);
-    assert.equal(associar([exemplo, { ...exemplo, CNPJ: 22345678000100 }], -20.5205), null, 'Associação ambígua não recebe preço');
-    assert.equal(associar([{ ...exemplo, precisao: 'municipio' }], -20.5205, exemplo.FANTASIA), null);
-    assert.equal(associar([exemplo], -20.5205, '', { brand: 'Shell' }), null);
-    assert.equal(associar([exemplo], -20.5205, '', { 'ref:cnpj': '99.999.999/0001-99' }), null);
-    assert.equal(associar([exemplo], -20.524, exemplo.FANTASIA)?.CNPJ, exemplo.CNPJ, 'Nome único permite confirmar um registro próximo');
-    assert.equal(associar([{ ...exemplo, FANTASIA: 'SHELL', BANDEIRA: 'RAIZEN' }], -20.524, 'Shell'), null, 'Bandeira sozinha não identifica estabelecimento');
-    assert.equal(associar([exemplo], -21, exemplo.FANTASIA), null, 'Nome igual de outra região não associa');
-    associar([exemplo], -20.5205);
-    const osmTeste = { type: 'node', id: 1, lat: -20.5205, lon: -47.4, tags: { amenity: 'fuel' } };
-    contexto.osmTeste = [osmTeste, { ...osmTeste, id: 2, tags: { amenity: 'parking' } }];
-    const resultado = vm.runInContext('processarElementos(osmTeste)', contexto);
-    assert.equal(resultado.length, 1);
-    assert.equal(resultado[0].lat, osmTeste.lat, 'Posição do marcador é a do OSM, não a do endereço ANP');
+    const proximo = { ...exemplo, CNPJ: 22345678000100, lat: -20.5204, FANTASIA: 'OUTRO POSTO' };
+    assert.equal(associar([exemplo, proximo], -20.5205)?.CNPJ, proximo.CNPJ, 'Escolhe o mais próximo entre dois registros');
+    assert.equal(associar([exemplo, proximo], -20.5205, exemplo.FANTASIA)?.CNPJ, proximo.CNPJ, 'Proximidade tem prioridade sobre nome');
+    assert.equal(associar([exemplo], -20.522), null, 'Não associa por distância acima de 150 metros');
+    assert.equal(associar([exemplo], -21, exemplo.FANTASIA)?.CNPJ, exemplo.CNPJ, 'Fallback por nome segue a pesquisa original na base ANP');
+    const razao = { ...exemplo, FANTASIA: '', 'RAZÃO': 'AUTO POSTO RAZAO SOCIAL LTDA' };
+    assert.equal(associar([razao], -21, razao['RAZÃO'])?.CNPJ, exemplo.CNPJ);
+    assert.equal(associar([exemplo], -21, 'NOME INEXISTENTE'), null);
+    const vizinho = { ...exemplo, lat: -20.51999 };
+    assert.equal(associar([vizinho], -20.52001)?.CNPJ, exemplo.CNPJ, 'Consulta a célula vizinha na borda da grade');
     contexto.registrosTeste = baseOriginal;
     vm.runInContext('postosANP = registrosTeste; gradeANP = criarGrade(postosANP);', contexto);
-    console.log('OK: grade, proximidade, nomes, ambiguidades, bandeiras, CNPJs e coordenadas OSM.');
+    console.log('OK: grade original, mais próximo até 150m, prioridade da distância e fallback por nome/razão social.');
     contexto.fetch = async () => ({ ok: false, status: 404 });
     contexto.console = { ...console, warn() {} };
     await vm.runInContext('carregarANP()', contexto);

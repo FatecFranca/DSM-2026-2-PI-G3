@@ -14,8 +14,8 @@ const config = {
     distanciaDuplicadoKm: 0.03,   // 30 m: pins próximos com nome igual são o mesmo posto
     minCaracteresBusca: 3,
     atrasoAutocompleteMs: 800,
-    caminhoANP: '../dados/json/postos_com_coordenadas.json',
-    caminhoOsm: '../dados/json/osm_BR.json',
+    caminhoANP: './dados/json/postos_com_coordenadas.json',
+    caminhoOsm: './dados/json/osm_BR.json',
     dataOsm: '2026-11-04',        // data em que o arquivo foi exportado do Overpass Turbo
     urlNominatim: 'https://nominatim.openstreetmap.org/search',
     urlTiles: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'

@@ -7,13 +7,15 @@ import calcularDistancia from './Math.js';
    ======================================== */
 const config = {
     raioMaximoKm: 15,             // raio máximo considerado; o filtro reduz na tela
+    tamanhoCelulaGrau: 0.005,    // índice espacial da base ANP
+    toleranciaNomeKm: 1,         // nome só pode confirmar um posto próximo
     toleranciaKm: 0.15,           // distância máxima entre posto OSM e posto ANP
     minCaracteresNome: 12,        // evita casar nomes genéricos como "POSTO"
     distanciaDuplicadoKm: 0.03,   // 30 m: pins próximos com nome igual são o mesmo posto
     minCaracteresBusca: 3,
     atrasoAutocompleteMs: 800,
-caminhoANP: './dados/json/postos_com_coordenadas.json',
-caminhoOsm: './dados/json/osm_BR.json',
+    caminhoANP: './dados/json/postos_com_coordenadas.json',
+    caminhoOsm: './dados/json/osm_BR.json',
     urlNominatim: 'https://nominatim.openstreetmap.org/search',
     urlTiles: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 };
@@ -22,6 +24,7 @@ caminhoOsm: './dados/json/osm_BR.json',
    ESTADO
    ======================================== */
 let postosANP = [];
+let gradeANP = new Map();
 let bandeiras = {};
 let erroANP = false;
 let elementosOsm = null;         // postos do OSM, lidos uma única vez
@@ -41,7 +44,7 @@ const $ = (id) => document.getElementById(id);
 
 const setStatus = (mensagem) => { $('status').textContent = mensagem; };
 
-const coordenadasValidas = (lat, lng) => Number.isFinite(lat) && Number.isFinite(lng);
+const coordenadasValidas = (lat, lng) => Number.isFinite(lat) && Number.isFinite(lng) && Math.abs(lat) < 90 && Math.abs(lng) <= 180;
 
 const formatarDistancia = (km) => km < 1 ? `${Math.round(km * 1000)} metros` : `${km.toFixed(1)} km`;
 
@@ -77,11 +80,13 @@ async function carregarANP() {
         if (!res.ok) throw new Error(`Status ${res.status}`);
 
         postosANP = await res.json();
+        gradeANP = criarGrade(postosANP);
         erroANP = false;
         console.info(`Preços carregados: ${postosANP.length} postos.`);
     } catch (erro) {
         console.warn('Não foi possível carregar os preços.', erro);
         postosANP = [];
+        gradeANP = new Map();
         erroANP = true;
     }
 }
@@ -124,6 +129,77 @@ function nomesCombinam(a, b) {
     const [curto, longo] = a.length <= b.length ? [a, b] : [b, a];
     return curto.length >= config.minCaracteresNome &&
         ` ${longo} `.includes(` ${curto} `);
+}
+
+// A grade permite procurar apenas os registros ANP da vizinhança.
+function linhaColuna(lat, lng) {
+    return [Math.floor(lat / config.tamanhoCelulaGrau), Math.floor(lng / config.tamanhoCelulaGrau)];
+}
+
+function criarGrade(postos) {
+    const grade = new Map();
+    for (const posto of postos) {
+        if (!coordenadasValidas(posto.lat, posto.lng)) continue;
+        if (posto.precisao === 'municipio') continue;
+        const chave = linhaColuna(posto.lat, posto.lng).join(',');
+        if (!grade.has(chave)) grade.set(chave, []);
+        grade.get(chave).push(posto);
+    }
+    return grade;
+}
+
+function candidatosProximos(lat, lng, raio) {
+    const [linha, coluna] = linhaColuna(lat, lng);
+    const tamanhoKm = config.tamanhoCelulaGrau * 111 * Math.cos(lat * Math.PI / 180);
+    const alcance = Math.ceil(raio / tamanhoKm);
+    const candidatos = [];
+    for (let dl = -alcance; dl <= alcance; dl++) {
+        for (let dc = -alcance; dc <= alcance; dc++) {
+            for (const posto of gradeANP.get((linha + dl) + ',' + (coluna + dc)) || []) {
+                if (calcularDistancia(lat, lng, posto.lat, posto.lng) <= raio) candidatos.push(posto);
+            }
+        }
+    }
+    return candidatos;
+}
+
+function bandeiraNormalizada(nome) {
+    const marca = normalizarNome(nome);
+    if (/SHELL|RAIZEN|SABBA/.test(marca)) return 'SHELL';
+    if (['BR', 'PETROBRAS', 'VIBRA'].includes(marca)) return 'BR';
+    return marca;
+}
+
+function identificacaoCompativel(posto, tags) {
+    const cnpj = String(tags['ref:cnpj'] || '').replace(/\D/g, '');
+    if (cnpj && cnpj.padStart(14, '0') !== String(posto.CNPJ).padStart(14, '0')) return false;
+    if (tags.brand && posto.BANDEIRA && bandeiraNormalizada(tags.brand) !== bandeiraNormalizada(posto.BANDEIRA)) return false;
+    return true;
+}
+
+function encontrarPorDistancia(lat, lng, tags = {}) {
+    const candidatos = candidatosProximos(lat, lng, config.toleranciaKm)
+        .filter(posto => identificacaoCompativel(posto, tags));
+    // Não escolhe arbitrariamente entre dois estabelecimentos próximos.
+    return candidatos.length === 1 ? candidatos[0] : null;
+}
+
+function encontrarPorNome(nomeOsm, lat, lng, tags = {}) {
+    const nome = normalizarNome(nomeOsm);
+    const palavras = nome.split(' ').filter(palavra => !['POSTO', 'AUTO', 'DE', 'DO', 'DA', 'COMBUSTIVEL', 'COMBUSTIVEIS'].includes(palavra));
+    if (!palavras.length || ['SHELL', 'BR', 'IPIRANGA', 'ALE'].includes(bandeiraNormalizada(palavras.join(' ')))) return null;
+    const candidatos = candidatosProximos(lat, lng, config.toleranciaNomeKm).filter(function (posto) {
+        return identificacaoCompativel(posto, tags) && (
+            nomesCombinam(nome, normalizarNome(posto.FANTASIA)) ||
+            nomesCombinam(nome, normalizarNome(posto['RAZÃO']))
+        );
+    });
+    return candidatos.length === 1 ? candidatos[0] : null;
+}
+
+function encontrarPrecoANP(lat, lng, nomeOsm, tags = {}) {
+    if (!coordenadasValidas(lat, lng)) return null;
+    return encontrarPorNome(nomeOsm, lat, lng, tags) || encontrarPorDistancia(lat, lng, tags);
 }
 
 /* ========================================
@@ -467,50 +543,54 @@ async function buscarPostos() {
     setStatus('Carregando os preços da ANP...');
     await prontoDados;
 
-    // A ANP já tem os preços e as coordenadas. Não depende de um posto existir no OSM.
     postosEncontrados = processarElementos(elementosOsm || []);
-    avisoFonte = ' Fonte dos preços: base local da ANP. Confira a data de coleta em cada preço.';
-    if (erroANP) avisoFonte = ' Não foi possível carregar a base de preços da ANP. Recarregue a página e confira o servidor.';
-    if (!elementosOsm) avisoFonte += ' Mapa de postos OSM indisponível; os registros da ANP continuam disponíveis.';
+    avisoFonte = ' Localização: postos cadastrados no OSM. Preços: ANP, quando a associação é possível.';
+    if (erroANP) avisoFonte += ' Não foi possível carregar a base de preços da ANP.';
+    if (!elementosOsm) avisoFonte = ' OSM indisponível: não foi possível confirmar a localização dos postos. Recarregue a página.';
     aplicarFiltros();
 }
 
 function processarElementos(elementos) {
     const postos = [];
-
-    for (const dados of postosANP) {
-        // Coordenadas do município não identificam a localização de um posto.
-        if (dados.precisao === 'municipio') continue;
-        if (!coordenadasValidas(dados.lat, dados.lng)) continue;
-        const distancia = calcularDistancia(localUsuario.lat, localUsuario.lng, dados.lat, dados.lng);
-        if (distancia > config.raioMaximoKm) continue;
-
-        postos.push({
-            lat: dados.lat,
-            lng: dados.lng,
-            distancia,
-            dadosPreco: dados
-        });
-    }
-
-    // O OSM complementa a lista, sem atribuir preços de outro estabelecimento.
-    const extras = [];
     for (const elemento of elementos) {
+        if (elemento.tags?.amenity !== 'fuel') continue;
+        if (elemento.tags.disused === 'yes' || elemento.tags.abandoned === 'yes') continue;
+        if (elemento.tags['disused:amenity'] || elemento.tags['abandoned:amenity']) continue;
         const lat = elemento.type === 'node' ? elemento.lat : elemento.center?.lat;
         const lng = elemento.type === 'node' ? elemento.lon : elemento.center?.lon;
         if (!coordenadasValidas(lat, lng)) continue;
         const distancia = calcularDistancia(localUsuario.lat, localUsuario.lng, lat, lng);
         if (distancia > config.raioMaximoKm) continue;
-
-        const jaListado = postos.some(function (posto) {
-            return calcularDistancia(lat, lng, posto.lat, posto.lng) <= config.toleranciaKm;
+        postos.push({
+            ...elemento,
+            lat,
+            lng,
+            distancia,
+            dadosPreco: encontrarPrecoANP(lat, lng, elemento.tags.name, elemento.tags)
         });
-        if (!jaListado) extras.push({ ...elemento, lat, lng, distancia, dadosPreco: null });
     }
-
-    return postos.concat(removerDuplicados(extras)).sort(function (a, b) {
-        return a.distancia - b.distancia;
-    });
+    postos.sort((a, b) => a.distancia - b.distancia);
+    const lista = removerDuplicados(postos);
+    const associados = new Map();
+    for (const posto of lista) {
+        if (!posto.dadosPreco) continue;
+        const dados = posto.dadosPreco;
+        const anterior = associados.get(dados);
+        if (!anterior) {
+            associados.set(dados, posto);
+            continue;
+        }
+        // Um registro ANP não fornece preço para dois postos OSM diferentes.
+        const distanciaAtual = calcularDistancia(posto.lat, posto.lng, dados.lat, dados.lng);
+        const distanciaAnterior = calcularDistancia(anterior.lat, anterior.lng, dados.lat, dados.lng);
+        if (distanciaAtual < distanciaAnterior) {
+            anterior.dadosPreco = null;
+            associados.set(dados, posto);
+        } else {
+            posto.dadosPreco = null;
+        }
+    }
+    return lista;
 }
 
 // Remove pins muito próximos com o mesmo nome (ex.: node e way do mesmo posto no OSM)
@@ -588,7 +668,7 @@ function tipoCombustivel(nome) {
 
 function htmlProdutos(posto, combustivel) {
     if (!posto.dadosPreco) {
-        return '<p class="sem-preco">Sem preço cadastrado na base da ANP.</p>';
+        return '<p class="sem-preco">Preço da ANP não associado a este posto.</p>';
     }
 
     const produtos = (posto.dadosPreco.PRODUTOS ?? [])

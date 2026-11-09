@@ -20,7 +20,7 @@ Acesse http://localhost:5500. Para encerrar, pressione Ctrl+C. Também é possí
 
 O layout se adapta ao celular. Teclado: Tab navega, Enter ativa cards e botões, Escape fecha os diálogos. Sobre, Dicas e perfil abrem informações locais.
 
-Os cards com preços vêm diretamente de `dados/json/postos_com_coordenadas.json`, a base local da ANP. O OpenStreetMap acrescenta os estabelecimentos sem preço cadastrado. A lista prioriza os postos com preços e mostra cada combustível e sua data de coleta. O mapa inicial abre em Franca; busque outro endereço para mudar a região. Registros com coordenadas apenas do município não entram no mapa, pois não localizam o estabelecimento. Não há garantia de preços atuais. A busca de endereço, o mapa e a biblioteca Leaflet precisam de internet. O mapa usa cartografia do OpenStreetMap, portanto as ruas não são idênticas à ilustração dos prints.
+Os postos exibidos e suas coordenadas vêm do arquivo local do OpenStreetMap (`dados/json/osm_BR.json`). A grade espacial da ANP permite consultar apenas registros próximos para associar os preços, com validações de nome, proximidade, bandeira e CNPJ quando disponíveis. As coordenadas do endereço ANP não criam marcadores. Registros com localização apenas do município e associações ambíguas não fornecem preços aos marcadores. Sem OSM, a interface avisa que não consegue confirmar as localizações. O mapa inicial abre em Franca e a busca permite escolher outra região. Confira a data de coleta: os preços não são atualizados em tempo real. O mapa e a busca de endereço precisam de internet.
 
 A logo principal em `img/logo.png` foi preservada. Os logos reais das bandeiras ficam em `img/bandeiras/` e o cadastro com as fontes em `dados/json/bandeiras.json`. Shell, BR/Petrobras, Ipiranga e ALE substituem as antigas aproximações. Os logos são arquivos das marcas, obtidos de sites oficiais ou fontes identificadas no cadastro. J.R Distribuidora permanece apenas com o nome porque não foi possível confirmar um logo confiável. Branca usa fundo branco; Sem bandeira usa cinza.
 
@@ -36,4 +36,4 @@ Consulte [GUIA-GITHUB.md](GUIA-GITHUB.md) para enviar as alterações ao grupo.
 
 ## Verificar os preços
 
-Execute `node tests/precos.test.cjs`. O teste usa as bases reais, verifica os 16 postos localizados de Franca, os preços nos cards, as datas, os filtros, a ordenação e o funcionamento sem OSM. Também verifica o aviso quando a base ANP não carrega.
+Execute `node tests/precos.test.cjs`. O teste usa as bases reais e casos controlados para verificar a grade espacial, os vínculos entre OSM e ANP, a exclusão de posições artificiais, os preços, os filtros, as etiquetas e os raios.

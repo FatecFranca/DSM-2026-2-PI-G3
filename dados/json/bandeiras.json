@@ -2,259 +2,341 @@
   "BRANCA": {
     "nome": "Branca",
     "logo": null,
-    "fundo": "#ffffff"
+    "fundo": "#ffffff",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#ffffff"
   },
   "SEM BANDEIRA": {
     "nome": "Sem bandeira",
     "logo": null,
-    "fundo": "#b1b1b1"
+    "fundo": "#b1b1b1",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1"
   },
   "ALE": {
     "nome": "ALE",
     "logo": "./img/bandeiras/ale.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#21158d",
     "fonte": "https://www2.ale.com.br/",
     "imagemOriginal": "https://assets.ale.com.br/app/themes/theme_postos_ale/imagens/layout/logo.png"
   },
   "ATEM' S": {
     "nome": "ATEM' S",
     "logo": "./img/bandeiras/atem-s.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://atem.com.br/",
     "imagemOriginal": "https://atem.com.br/wp-content/themes/conatus-atem/img/logo/Logo-Atem-PNG.png"
   },
   "ATLÂNTICA": {
     "nome": "ATLÂNTICA",
     "logo": "./img/bandeiras/atlantica.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.atlanticapetroleo.com.br/",
     "imagemOriginal": "https://www.atlanticapetroleo.com.br/img/logo_atlantica.png"
   },
   "CHARRUA": {
     "nome": "CHARRUA",
     "logo": "./img/bandeiras/charrua.svg",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.charrua.com.br/",
     "imagemOriginal": "https://www.charrua.com.br/wp-content/uploads/2023/07/logo.svg"
   },
   "CIAPETRO": {
     "nome": "CIAPETRO",
     "logo": "./img/bandeiras/ciapetro.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://ciapetro.com.br/",
     "imagemOriginal": "https://ciapetro.com.br/wp-content/uploads/2018/11/cropped-logo_site-192x192.png"
   },
   "DIBRAPE": {
     "nome": "DIBRAPE",
     "logo": "./img/bandeiras/dibrape.png",
+    "fundoLogo": "#183b43",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://dibrape.com.br/",
-    "imagemOriginal": "https://dibrape.com.br/wp-content/uploads/2025/07/Dibrape-amarelo.png",
-    "fundoLogo": "#183b43"
+    "imagemOriginal": "https://dibrape.com.br/wp-content/uploads/2025/07/Dibrape-amarelo.png"
   },
   "DISLUB": {
     "nome": "DISLUB",
     "logo": "./img/bandeiras/dislub.svg",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.dislubenergia.com.br/",
     "imagemOriginal": "https://pages.greatpages.com.br/www.dislubenergia.com.br/1789651948/imagens/0.svg"
   },
   "D`MAIS": {
     "nome": "D`MAIS",
     "logo": "./img/bandeiras/d-mais.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.dmais-distribuidora.com/",
     "imagemOriginal": "https://static.wixstatic.com/media/22308a_83c7ebab985f4175bb806c18fb888605~mv2.png/v1/crop/x_0,y_0,w_380,h_235/fill/w_135,h_83,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/posto_dmais2_edited.png"
   },
   "EQUADOR": {
     "nome": "EQUADOR",
     "logo": "./img/bandeiras/equador.svg",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://equadorenergia.com.br/",
     "imagemOriginal": "https://pages.greatpages.com.br/www.equadorenergia.com.br/1790700450/imagens/7.svg"
   },
   "ESTRADA": {
     "nome": "ESTRADA",
     "logo": "./img/bandeiras/estrada.svg",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://grupoestrada.com.br/",
     "imagemOriginal": "https://grupoestrada.com.br/wp-content/uploads/2024/02/logo-azul-05.svg"
   },
   "FAN": {
     "nome": "FAN",
     "logo": "./img/bandeiras/fan.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://fancombustiveis.com.br/",
     "imagemOriginal": "https://fancombustiveis.com.br/wp-content/uploads/2022/04/fan-combustiveis-logo.png"
   },
   "FEDERAL ENERGIA": {
     "nome": "FEDERAL ENERGIA",
     "logo": "./img/bandeiras/federal-energia.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://federalenergia.com/",
     "imagemOriginal": "https://federalenergia.com/wp-content/uploads/2025/06/logo.png"
   },
   "GP": {
     "nome": "GP",
     "logo": "./img/bandeiras/gp.svg",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://gpcombustiveis.com.br/",
     "imagemOriginal": "https://gpcombustiveis.com.br/wp-content/uploads/2026/02/logo-gp-combustiveis-50-anos.svg"
   },
   "IDAZA": {
     "nome": "IDAZA",
     "logo": "./img/bandeiras/idaza.svg",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://idaza.com.br/01-2/",
     "imagemOriginal": "https://idaza.com.br/wp-content/uploads/2024/04/Logo_idazaLogo_idaza.svg"
   },
   "IPIRANGA": {
     "nome": "IPIRANGA",
     "logo": "./img/bandeiras/ipiranga.svg",
+    "fundoLogo": "#ff6800",
+    "fundoTopo": "#ff6800",
     "fonte": "https://www.ipiranga.com.br/wps/portal/pt-br/ipiranga/inicio",
     "imagemOriginal": "https://www.ipiranga.com.br/wps/contenthandler/pt-br/!ut/p/digest!jrNKL_3isuc4kfF0Av0GfQ/dav/fs-type1/themes/ipiranga.institucionalv4.theme/assets/img/logo-ipiranga-azul.svg"
   },
   "J.R DISTRIBUIDORA": {
     "nome": "J.R DISTRIBUIDORA",
     "logo": null,
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "observacao": "Logo não confirmado em fonte confiável. Exibir o nome sem inventar uma imagem."
   },
   "LARCO": {
     "nome": "LARCO",
     "logo": "./img/bandeiras/larco.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.larcopetroleo.com.br/",
     "imagemOriginal": "https://www.larcopetroleo.com.br/wp-content/themes/larco/images/logo.png"
   },
   "MAXSUL": {
     "nome": "MAXSUL",
     "logo": "./img/bandeiras/maxsul.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://maxsulcombustiveis.com.br/",
     "imagemOriginal": "https://maxsulcombustiveis.com.br/wp-content/uploads/2024/02/logo_maxsul.png"
   },
   "MONTEPETRO": {
     "nome": "MONTEPETRO",
     "logo": "./img/bandeiras/montepetro.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://montepetro.com.br/",
     "imagemOriginal": "https://montepetro.com.br/img/logo-monte-petro.png"
   },
   "NEXTA": {
     "nome": "NEXTA",
     "logo": "./img/bandeiras/nexta.svg",
+    "fundoLogo": "#183b43",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://nexta.com.br/",
-    "imagemOriginal": "https://nexta.com.br/wp-content/uploads/2025/12/nexta.svg",
-    "fundoLogo": "#183b43"
+    "imagemOriginal": "https://nexta.com.br/wp-content/uploads/2025/12/nexta.svg"
   },
   "ON PETRO": {
     "nome": "ON PETRO",
     "logo": "./img/bandeiras/on-petro.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.onpetro.com.br/",
     "imagemOriginal": "https://www.onpetro.com.br/wp-content/uploads/2025/02/cropped-logo_ONPETRO.png"
   },
   "PETROBAHIA": {
     "nome": "PETROBAHIA",
     "logo": "./img/bandeiras/petrobahia.svg",
+    "fundoLogo": "#183b43",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.petrobahia.com.br/",
-    "imagemOriginal": "https://www.petrobahia.com.br/wp-content/uploads/2019/05/logo-30anos-petrobahia.svg",
-    "fundoLogo": "#183b43"
+    "imagemOriginal": "https://www.petrobahia.com.br/wp-content/uploads/2019/05/logo-30anos-petrobahia.svg"
   },
   "PETROSERRA": {
     "nome": "PETROSERRA",
     "logo": "./img/bandeiras/petroserra.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.petroserra.com/",
     "imagemOriginal": "https://www.petroserra.com/images/petroserra-logo-sm.png"
   },
   "PETROX DISTRIBUIDORA": {
     "nome": "PETROX DISTRIBUIDORA",
     "logo": "./img/bandeiras/petrox-distribuidora.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://petrox.com.br/",
     "imagemOriginal": "https://petrox.com.br/wp-content/uploads/2025/04/logopetrox-250x69.png"
   },
   "POTENCIAL": {
     "nome": "POTENCIAL",
     "logo": "./img/bandeiras/potencial.webp",
+    "fundoLogo": "#b1b1b1",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.potencial.net.br/",
     "imagemOriginal": "https://cdn-sites-assets.mziq.com/wp-content/uploads/sites/1475/2025/05/AnyConv.com__Camada_11-1.webp"
   },
   "RAIZEN": {
     "nome": "RAIZEN",
     "logo": "./img/bandeiras/raizen.svg",
+    "fundoLogo": "#ffdf32",
+    "fundoTopo": "#ffdf32",
     "fonte": "https://www.shell.com.br/",
     "imagemOriginal": "https://www.shell.com.br/etc.clientlibs/amidala/clientlibs/theme-base/resources/favicon/favicon.svg"
   },
   "RAIZEN MIME": {
     "nome": "RAIZEN MIME",
     "logo": "./img/bandeiras/raizen-mime.svg",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.shell.com.br/",
     "imagemOriginal": "https://www.shell.com.br/etc.clientlibs/amidala/clientlibs/theme-base/resources/favicon/favicon.svg"
   },
   "RDP ENERGIA": {
     "nome": "RDP ENERGIA",
     "logo": "./img/bandeiras/rdp-energia.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.rdpenergia.com.br/",
     "imagemOriginal": "https://www.rdpenergia.com.br/assets/apple-touch-icon-180x180.png"
   },
   "RIO BRANCO": {
     "nome": "RIO BRANCO",
     "logo": "./img/bandeiras/rio-branco.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://gruporiobranco.com/rio-branco-energias/",
     "imagemOriginal": "https://gruporiobranco.com/wp-content/uploads/2025/10/logo-rio-branco-png.png"
   },
   "RODOIL": {
     "nome": "RODOIL",
     "logo": "./img/bandeiras/rodoil.svg",
+    "fundoLogo": "#183b43",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://rodoil.com.br/",
-    "imagemOriginal": "https://rodoil.com.br/assets/site/images/logo-footer.svg",
-    "fundoLogo": "#183b43"
+    "imagemOriginal": "https://rodoil.com.br/assets/site/images/logo-footer.svg"
   },
   "ROYAL FIC": {
     "nome": "ROYAL FIC",
     "logo": "./img/bandeiras/royal-fic.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.royalfic.com.br/",
     "imagemOriginal": "https://www.royalfic.com.br/assets/images/logo/logo-cor.png"
   },
   "RZD DISTRIBUIDORA": {
     "nome": "RZD DISTRIBUIDORA",
     "logo": "./img/bandeiras/rzd-distribuidora.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://analysisbrasil.com/cliente/rzd/",
     "imagemOriginal": "https://analysisbrasil.com/media/logo_cliente/2023/07/13/RZD_PETROLEO.png"
   },
   "SABBÁ": {
     "nome": "SABBÁ",
     "logo": "./img/bandeiras/sabba.svg",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.shell.com.br/",
     "imagemOriginal": "https://www.shell.com.br/etc.clientlibs/amidala/clientlibs/theme-base/resources/favicon/favicon.svg"
   },
   "SANTA LUCIA": {
     "nome": "SANTA LUCIA",
     "logo": "./img/bandeiras/santa-lucia.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://santaluciadistribuidora.com.br/",
     "imagemOriginal": "https://santaluciadistribuidora.com.br/wp-content/uploads/2024/03/logo-header-sombra.png"
   },
   "SETTA DISTRIBUIDORA": {
     "nome": "SETTA DISTRIBUIDORA",
     "logo": "./img/bandeiras/setta-distribuidora.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.settalubrificantes.com.br/",
     "imagemOriginal": "https://www.settalubrificantes.com.br/assets/img/brands/setta-lubrificantes-brand.png"
   },
   "SIM DISTRIBUIDOR": {
     "nome": "SIM DISTRIBUIDOR",
     "logo": "./img/bandeiras/sim-distribuidor.svg",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://nexta.com.br/",
     "imagemOriginal": "https://nexta.com.br/wp-content/uploads/2026/01/Logo-SIM-Distribuidora-RGB_Versao-Preto-1.svg"
   },
   "SP": {
     "nome": "SP",
     "logo": "./img/bandeiras/sp.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.spcombustiveis.com/",
     "imagemOriginal": "https://www.spcombustiveis.com/wp-content/uploads/2018/11/cropped-logo-sp-192x192.png"
   },
   "STANG": {
     "nome": "STANG",
     "logo": "./img/bandeiras/stang.webp",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://stangdistribuidora.com.br/",
     "imagemOriginal": "https://stangdistribuidora.com.br/wp-content/uploads/2024/11/logostang-6744ca5ff1549.webp"
   },
   "TAURUS": {
     "nome": "TAURUS",
     "logo": "./img/bandeiras/taurus.webp",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.tauruspetroleo.com.br/",
     "imagemOriginal": "https://images.squarespace-cdn.com/content/v1/60f70d6a25730c26800d643d/4b35dd39-fda9-42c0-b92b-c61f5418030f/marca_taurus_petroleo_11.png?format=1500w"
   },
   "TEMAPE": {
     "nome": "TEMAPE",
     "logo": "./img/bandeiras/temape.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://www.cdbordados.com.br/index.html",
     "imagemOriginal": "https://www.cdbordados.com.br/assets/images/clientes/temape.png"
   },
   "VIBRA": {
     "nome": "VIBRA",
     "logo": "./img/bandeiras/vibra.svg",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#009d38",
     "fonte": "https://www.logo.wine/logo/Petrobras",
     "imagemOriginal": "https://www.logo.wine/a/logo/Petrobras/Petrobras-Logo.wine.svg",
     "fonteOficial": "https://petrobras.com.br/quem-somos/nossa-marca"
@@ -262,6 +344,8 @@
   "WALENDOWSKY": {
     "nome": "WALENDOWSKY",
     "logo": "./img/bandeiras/walendowsky.png",
+    "fundoLogo": "#ffffff",
+    "fundoTopo": "#b1b1b1",
     "fonte": "https://wdcomdistribuidora.com.br/",
     "imagemOriginal": "https://wdcomdistribuidora.com.br/wp-content/uploads/2024/11/wdcom-logo.png"
   }

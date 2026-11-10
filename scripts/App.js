@@ -6,17 +6,23 @@ import calcularDistancia from './Math.js';
    CONFIGURAÇÃO
    ======================================== */
 const config = {
+    raioPadraoKm: 5,              // raio selecionado ao abrir a página
     raioMaximoKm: 15,             // raio máximo considerado; o filtro reduz na tela
-    tamanhoCelulaGrau: 0.005,    // índice espacial da base ANP
     toleranciaKm: 0.15,           // distância máxima entre posto OSM e posto ANP
+    tamanhoCelulaGrau: 0.005,     // ~500 m, tamanho das células do índice da ANP
     minCaracteresNome: 12,        // evita casar nomes genéricos como "POSTO"
     distanciaDuplicadoKm: 0.03,   // 30 m: pins próximos com nome igual são o mesmo posto
     minCaracteresBusca: 3,
     atrasoAutocompleteMs: 800,
     caminhoANP: './dados/json/postos_com_coordenadas.json',
     caminhoOsm: './dados/json/osm_BR.json',
+    caminhoBandeiras: './dados/json/bandeiras.json',
     urlNominatim: 'https://nominatim.openstreetmap.org/search',
-    urlTiles: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    urlTiles: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    aliasesBandeiras: { SHELL: 'RAIZEN', BR: 'VIBRA', PETROBRAS: 'VIBRA' },
+    textosInfo: {
+        perfil: ['Perfil', 'A busca está disponível sem cadastro. O projeto ainda não possui autenticação de usuários.']
+    }
 };
 
 /* ========================================
@@ -24,10 +30,11 @@ const config = {
    ======================================== */
 let postosANP = [];
 let gradeANP = new Map();
-let bandeiras = {};
-let erroANP = false;
+let bandeirasLogo = {};          // logos carregados de bandeiras.json
+let erroANP = false;             // true quando a base da ANP não carrega
+let dataColetaANP = '';          // data de coleta mais recente dos preços da ANP
 let elementosOsm = null;         // postos do OSM, lidos uma única vez
-let prontoDados = null;          // promessa do carregamento da ANP e do OSM
+let prontoDados = null;          // promessa do carregamento da ANP, do OSM e dos logos
 let avisoFonte = '';             // aviso sobre a origem dos dados exibidos
 let postosEncontrados = [];      // resultado da busca atual, já com distância e preço
 let map = null;
@@ -51,87 +58,37 @@ const formatarDistancia = (km) => km < 1 ? `${Math.round(km * 1000)} metros` : `
 
 const formatarPreco = (valor) => `R$ ${Number(valor).toFixed(2).replace('.', ',')}`;
 
+// Primeira letra maiúscula e o restante minúsculo (ex.: "AVENIDA BRASIL" -> "Avenida brasil")
+const capitalizarTexto = (texto) => {
+    const limpo = String(texto ?? '').trim().toLowerCase();
+    return limpo.charAt(0).toUpperCase() + limpo.slice(1);
+};
+
+const ESCAPES_HTML = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+
+// Escapa dados externos (ANP, OpenStreetMap, bandeiras) antes de inserir no HTML
+const escaparHtml = (valor) => String(valor ?? '').replace(/[&<>"']/g, (c) => ESCAPES_HTML[c]);
+
+// Abre o diálogo; se o navegador não tiver showModal, usa o atributo open
+function abrirDialog(dialog) {
+    if (typeof dialog.showModal === 'function') {
+        dialog.showModal();
+    } else {
+        dialog.setAttribute('open', '');
+    }
+}
+
+function fecharDialog(dialog) {
+    if (typeof dialog.close === 'function') {
+        dialog.close();
+    } else {
+        dialog.removeAttribute('open');
+    }
+}
 
 /* ========================================
    BASE DE PREÇOS (ANP)
    ======================================== */
-async function carregarLogos() {
-    try {
-        const resposta = await fetch('./dados/json/bandeiras.json');
-        if (!resposta.ok) throw new Error('Falha ao carregar logos');
-        bandeiras = await resposta.json();
-    } catch (erro) {
-        console.warn('Não foi possível carregar os logos.', erro);
-    }
-}
-
-function logoBandeira(nome) {
-    const chave = String(nome || 'SEM BANDEIRA').toUpperCase();
-    const aliases = { SHELL: 'RAIZEN', BR: 'VIBRA', PETROBRAS: 'VIBRA' };
-    const dados = bandeiras[aliases[chave] || chave];
-    if (dados?.logo) return '<span class="logo-original" style="background:' + (dados.fundoLogo || '#fff') + '"><img src="' + dados.logo + '" alt="Logo da bandeira" loading="lazy"></span>';
-    const rotulo = chave === 'BRANCA' ? 'Branca' : chave === 'SEM BANDEIRA' ? 'Sem bandeira' : nome;
-    const classe = chave === 'SEM BANDEIRA' ? 'selo-sem-bandeira' : 'selo-bandeira';
-    return '<span class="' + classe + '">' + escaparHTML(rotulo) + '</span>';
-}
-
-async function carregarANP() {
-    try {
-        const res = await fetch(config.caminhoANP);
-        if (!res.ok) throw new Error(`Status ${res.status}`);
-
-        postosANP = await res.json();
-        gradeANP = criarGrade(postosANP);
-        erroANP = false;
-        console.info(`Preços carregados: ${postosANP.length} postos.`);
-    } catch (erro) {
-        console.warn('Não foi possível carregar os preços.', erro);
-        postosANP = [];
-        gradeANP = new Map();
-        erroANP = true;
-    }
-}
-
-/* ========================================
-   DADOS DO OPENSTREETMAP (ARQUIVO SALVO)
-
-   ======================================== */
-async function carregarOsm() {
-    try {
-        const res = await fetch(config.caminhoOsm);
-        if (!res.ok) throw new Error(`Status ${res.status}`);
-
-        elementosOsm = (await res.json()).elements;
-        console.info(`Dados do OSM carregados: ${elementosOsm.length} elementos.`);
-    } catch (erro) {
-        console.warn('Não foi possível carregar o arquivo do OSM.', erro);
-        elementosOsm = null;
-    }
-}
-
-/* ========================================
-   NOMES DOS POSTOS
-   ======================================== */
-function normalizarNome(texto) {
-    return String(texto ?? '')
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')  // remove acentos
-        .toUpperCase()
-        .replace(/[^A-Z0-9 ]/g, ' ')      // remove pontuação
-        .replace(/\s+/g, ' ')
-        .trim();
-}
-
-function nomesCombinam(a, b) {
-    if (!a || !b) return false;
-    if (a === b) return true;
-
-    // Contenção só por palavras inteiras e com nome suficientemente longo
-    const [curto, longo] = a.length <= b.length ? [a, b] : [b, a];
-    return curto.length >= config.minCaracteresNome &&
-        ` ${longo} `.includes(` ${curto} `);
-}
-
 function linhaColuna(lat, lng) {
     return [
         Math.floor(lat / config.tamanhoCelulaGrau),
@@ -153,6 +110,125 @@ function criarGrade(postos) {
     }
 
     return grade;
+}
+
+// Procura a data de coleta mais recente entre todos os produtos (formato dd-mm-aaaa)
+function dataColetaMaisRecente() {
+    let maisRecente = null;
+
+    for (const posto of postosANP) {
+        for (const produto of posto.PRODUTOS ?? []) {
+            const [dia, mes, ano] = String(produto.dt_coleta ?? '').split('-').map(Number);
+            if (!dia || !mes || !ano) continue;
+
+            const data = new Date(ano, mes - 1, dia);
+            if (!maisRecente || data > maisRecente) maisRecente = data;
+        }
+    }
+
+    return maisRecente ? maisRecente.toLocaleDateString('pt-BR') : '';
+}
+
+async function carregarANP() {
+    try {
+        const res = await fetch(config.caminhoANP);
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+
+        postosANP = await res.json();
+        gradeANP = criarGrade(postosANP);
+        dataColetaANP = dataColetaMaisRecente();
+        erroANP = false;
+        console.info(`Preços carregados: ${postosANP.length} postos.`);
+    } catch (erro) {
+        console.warn('Não foi possível carregar os preços.', erro);
+        postosANP = [];
+        gradeANP = new Map();
+        erroANP = true;
+    }
+}
+
+/* ========================================
+   LOGOS DAS BANDEIRAS
+   ======================================== */
+async function carregarLogos() {
+    try {
+        const res = await fetch(config.caminhoBandeiras);
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+
+        bandeirasLogo = await res.json();
+    } catch (erro) {
+        console.warn('Não foi possível carregar os logos.', erro);
+        bandeirasLogo = {};
+    }
+}
+
+// Cor do topo do card, vinda do bandeiras.json
+function fundoTopoDoPosto(posto) {
+    const chave = normalizarNome(bandeiraDoPosto(posto) || 'SEM BANDEIRA');
+    const chaveReal = config.aliasesBandeiras[chave] || chave;
+
+    return bandeirasLogo[chaveReal]?.fundoTopo || '#b1b1b1';
+}
+
+// Identificador único da bandeira: aplica os aliases (SHELL -> RAIZEN, BR -> VIBRA)
+function chaveBandeira(nome) {
+    const chave = normalizarNome(nome || 'SEM BANDEIRA');
+    return config.aliasesBandeiras[chave] || chave;
+}
+
+function logoBandeira(nome) {
+    const chave = normalizarNome(nome || 'SEM BANDEIRA');
+    const chaveReal = config.aliasesBandeiras[chave] || chave;
+    const dados = bandeirasLogo[chaveReal];
+
+    if (dados?.logo) {
+        const fundo = dados.fundoLogo ? ` style="background:${escaparHtml(dados.fundoLogo)}"` : '';
+        return `<span class="logo-original"${fundo}><img src="${escaparHtml(dados.logo)}" alt="Logo ${escaparHtml(capitalizarTexto(nome))}" loading="lazy"></span>`;
+    }
+
+    const classe = chave === 'SEM BANDEIRA' ? 'selo-sem-bandeira' : 'selo-bandeira';
+    const rotulo = chave === 'SEM BANDEIRA' ? 'Sem bandeira' : nome;
+
+    return `<span class="${classe}">${escaparHtml(capitalizarTexto(rotulo))}</span>`;
+}
+
+/* ========================================
+   DADOS DO OPENSTREETMAP (ARQUIVO SALVO)
+   ======================================== */
+async function carregarOsm() {
+    try {
+        const res = await fetch(config.caminhoOsm);
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+
+        elementosOsm = (await res.json()).elements;
+        console.info(`Dados do OSM carregados: ${elementosOsm.length} elementos.`);
+    } catch (erro) {
+        console.warn('Não foi possível carregar o arquivo do OSM.', erro);
+        elementosOsm = null;
+    }
+}
+
+/* ========================================
+   CRUZAMENTO OSM ↔ ANP
+   ======================================== */
+function normalizarNome(texto) {
+    return String(texto ?? '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')  // remove acentos
+        .toUpperCase()
+        .replace(/[^A-Z0-9 ]/g, ' ')      // remove pontuação
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+function nomesCombinam(a, b) {
+    if (!a || !b) return false;
+    if (a === b) return true;
+
+    // Contenção só por palavras inteiras e com nome suficientemente longo
+    const [curto, longo] = a.length <= b.length ? [a, b] : [b, a];
+    return curto.length >= config.minCaracteresNome &&
+        ` ${longo} `.includes(` ${curto} `);
 }
 
 function encontrarPorDistancia(lat, lng) {
@@ -269,7 +345,10 @@ function escolherLocal(local) {
 async function usarLocalizacao(lat, lng, mensagem) {
     localUsuario = { lat, lng };
     setStatus(mensagem);
-    criarMapa();
+
+    // O mapa só é criado quando o usuário define o local
+    if (!criarMapa()) return;
+
     await buscarPostos();
 }
 
@@ -333,11 +412,15 @@ async function buscarEndereco(texto) {
    MAPA
    ======================================== */
 function criarMapa() {
-    if (typeof L === 'undefined') { setStatus('Não foi possível carregar o mapa. Verifique sua conexão e recarregue a página.'); return; }
+    if (typeof L === 'undefined') {
+        setStatus('Não foi possível carregar o mapa. Verifique sua conexão e recarregue a página.');
+        return false;
+    }
+
     if (map) map.remove();
     postosEncontrados = [];
 
-    map = L.map('map', { zoomControl: false }).setView([localUsuario.lat, localUsuario.lng], 14);
+    map = L.map('map').setView([localUsuario.lat, localUsuario.lng], 14);
 
     L.tileLayer(config.urlTiles, {
         attribution: '&copy; OpenStreetMap contributors',
@@ -353,14 +436,22 @@ function criarMapa() {
     });
 
     marcadorUsuario = L.marker([localUsuario.lat, localUsuario.lng], { icon: iconeUsuario }).addTo(map);
-    marcadorUsuario.bindPopup('<strong>Você está aqui</strong>');
+    marcadorUsuario.bindPopup('<strong>Você está aqui</strong>').openPopup();
+
+    // Renderizador com margem: desenha o círculo também fora da área visível,
+    // para que ele não suma enquanto o mapa é arrastado
+    const renderizador = L.svg({ padding: 1 });
+
     circuloBusca = L.circle([localUsuario.lat, localUsuario.lng], {
         radius: Number($('selRaio').value) * 1000,
         stroke: false,
         fillColor: '#92d945',
-        fillOpacity: 0.23
+        fillOpacity: 0.23,
+        renderer: renderizador
     }).addTo(map);
+
     map.fitBounds(circuloBusca.getBounds(), { padding: [20, 20] });
+    return true;
 }
 
 // Remove os pins de postos, mantendo o marcador do usuário
@@ -377,32 +468,16 @@ function limparMarcadores() {
 /* ========================================
    FILTROS
    ======================================== */
-// Mostra somente as bandeiras dos resultados, sem restringir pela bandeira escolhida.
-function preencherFiltros() {
-    const postos = postosEncontrados.filter(posto => passaFiltros(posto, true));
-    const bandeiras = [...new Set(postos.map(posto => posto.dadosPreco?.BANDEIRA).filter(Boolean))].sort();
-    const select = $('selBandeira');
-    const escolhida = select.value;
-    select.innerHTML = '';
-    select.add(new Option('Todas as bandeiras', ''));
-    for (const bandeira of bandeiras) {
-        select.add(new Option(bandeira, bandeira));
-    }
-    select.value = bandeiras.includes(escolhida) ? escolhida : '';
-    const opcoes = $('listaBandeiras');
-    opcoes.innerHTML = '';
-    for (const nome of ['', ...bandeiras]) {
-        const botao = document.createElement('button');
-        botao.type = 'button';
-        botao.innerHTML = (nome ? '<span class="mini-bandeira">' + logoBandeira(nome) + '</span>' : '') + escaparHTML(nome || 'Todas as bandeiras');
-        botao.addEventListener('click', function () {
-            select.value = nome;
-            $('menuBandeiras').open = false;
-            aplicarFiltros();
-        });
-        opcoes.appendChild(botao);
-    }
-    $('bandeiraEscolhida').innerHTML = (select.value ? '<span class="mini-bandeira">' + logoBandeira(select.value) + '</span>' : '') + escaparHTML(select.value || 'Todas as bandeiras');
+// Combustíveis marcados nas checkboxes ([data-fuel])
+function combustiveisSelecionados() {
+    return [...document.querySelectorAll('[data-fuel]:checked')].map(input => input.dataset.fuel);
+}
+
+function combustiveisEfetivos() {
+    const selecionados = combustiveisSelecionados();
+    if (selecionados.length > 0) return selecionados;
+
+    return [...document.querySelectorAll('[data-fuel]')].map(input => input.dataset.fuel);
 }
 
 function precoDoCombustivel(posto, combustivel) {
@@ -412,25 +487,26 @@ function precoDoCombustivel(posto, combustivel) {
     return produto ? Number(produto.preco) : null;
 }
 
+// Decide se o posto aparece com os filtros atuais.
+// ignorarBandeira é usado para montar a lista de bandeiras sem restringir por elas.
 function passaFiltros(posto, ignorarBandeira = false) {
     const raioKm = Number($('selRaio').value);
     const bandeira = $('selBandeira').value;
+    const selecionados = combustiveisSelecionados();
     const temAnp = Boolean(posto.dadosPreco);
 
     if (posto.distancia > raioKm) return false;
-    const selecionados = [...document.querySelectorAll('[data-fuel]:checked')].map(input => input.dataset.fuel);
-    if (!selecionados.length) return false;
-    if (temAnp && !posto.dadosPreco.PRODUTOS.some(p => selecionados.includes(tipoCombustivel(p.nome)))) return false;
+
+    if (temAnp && !(posto.dadosPreco.PRODUTOS ?? []).some(p => selecionados.includes(tipoCombustivel(p.nome)))) return false;
 
     if ($('chkApenasANP').checked && !temAnp) return false;
 
-    if (!ignorarBandeira && bandeira && (!temAnp || posto.dadosPreco.BANDEIRA !== bandeira)) return false;
-
+    if (!ignorarBandeira && bandeira && chaveBandeira(bandeiraDoPosto(posto)) !== chaveBandeira(bandeira)) return false;
 
     return true;
 }
 
-// Ordena pelo preço do combustível; postos sem preço ficam no fim
+// Ordena pelo preço do combustível; postos sem preço ficam no fim, ordenados por distância
 function ordenarPorPreco(postos, combustivel) {
     return [...postos].sort(function (a, b) {
         const precoA = precoDoCombustivel(a, combustivel);
@@ -444,23 +520,85 @@ function ordenarPorPreco(postos, combustivel) {
     });
 }
 
+function atualizarBandeiras() {
+    const postos = postosEncontrados.filter(p =>
+    p.distancia <= Number($('selRaio').value) &&
+    (!$('chkApenasANP').checked || p.dadosPreco)
+    );
+
+    // Uma opção por bandeira real: SHELL e RAIZEN contam como a mesma
+    const porChave = new Map();
+
+    for (const posto of postos) {
+        const nome = bandeiraDoPosto(posto);
+        if (!nome) continue;
+
+        const chave = chaveBandeira(nome);
+        if (!porChave.has(chave)) porChave.set(chave, nome);
+    }
+
+    const bandeiras = [...porChave.values()].sort();
+    const select = $('selBandeira');
+    const escolhida = select.value;
+
+    select.innerHTML = '';
+    select.add(new Option('Todas as bandeiras', ''));
+
+    for (const bandeira of bandeiras) {
+        select.add(new Option(bandeira, bandeira));
+    }
+
+    select.value = bandeiras.includes(escolhida) ? escolhida : '';
+
+    const lista = $('listaBandeiras');
+    lista.innerHTML = '';
+
+    for (const nome of ['', ...bandeiras]) {
+        const botao = document.createElement('button');
+        botao.type = 'button';
+        botao.innerHTML = (nome ? `<span class="mini-bandeira">${logoBandeira(nome)}</span>` : '') +
+            escaparHtml(nome ? capitalizarTexto(nome) : 'Todas as bandeiras');
+
+        botao.addEventListener('click', function () {
+            select.value = nome;
+            $('menuBandeiras').open = false;
+            aplicarFiltros();
+        });
+
+        lista.appendChild(botao);
+    }
+}
+
+// Atualiza só o texto do menu de bandeiras (não reconstrói a lista)
+function atualizarRotuloBandeira() {
+    const bandeira = $('selBandeira').value;
+
+    $('bandeiraEscolhida').innerHTML = bandeira
+        ? `<span class="mini-bandeira">${logoBandeira(bandeira)}</span>${escaparHtml(capitalizarTexto(bandeira))}`
+        : 'Todas as bandeiras';
+}
+
+function atualizarAvisoMapa(combustiveis) {
+    $('avisoMapa').textContent = combustiveis.length === 1
+        ? `Preço no mapa: ${capitalizarTexto(combustiveis[0].replace(/-/g, ' '))}.`
+        : 'Para ver preços no mapa, marque apenas um combustível.';
+}
+
+// Aplica os filtros sobre a busca atual, sem nova consulta
 function aplicarFiltros() {
     if (!localUsuario) return;
 
-    const selecionados = document.querySelectorAll('[data-fuel]:checked');
-    $('avisoMapa').textContent = selecionados.length === 1
-        ? 'Preço no mapa: ' + selecionados[0].dataset.fuel.replace(/-/g, ' ') + '.'
-        : 'Para ver preços no mapa, marque apenas um combustível.';
-
-    const combustivel = selecionados.length === 1 ? selecionados[0].dataset.fuel : '';
+    const combustiveis = combustiveisSelecionados();
+    const combustivel = combustiveis.length === 1 ? combustiveis[0] : '';
     const ordenacao = $('selOrdenacao').value;
     const raioKm = Number($('selRaio').value);
     const container = $('postos');
 
+    atualizarAvisoMapa(combustiveis);
+    atualizarRotuloBandeira();
     limparMarcadores();
     container.innerHTML = '';
 
-    preencherFiltros();
     let lista = postosEncontrados.filter(posto => passaFiltros(posto));
 
     if (ordenacao === 'preco' && combustivel) {
@@ -468,20 +606,15 @@ function aplicarFiltros() {
     }
 
     if (lista.length === 0) {
-        const mensagem = selecionados.length === 0
+        const mensagem = combustiveis.length === 0
             ? 'Selecione um combustível para ver os postos e preços.'
             : 'Nenhum posto encontrado com esses filtros.';
-        container.innerHTML = '<p>' + mensagem + '</p>';
+
+        container.innerHTML = `<p>${mensagem}</p>`;
         setStatus(mensagem + avisoFonte);
         return;
     }
 
-    // Os postos com preços aparecem primeiro; a distância ordena cada grupo.
-    if (ordenacao !== 'preco') {
-        lista.sort(function (a, b) {
-            return Number(Boolean(b.dadosPreco)) - Number(Boolean(a.dadosPreco)) || a.distancia - b.distancia;
-        });
-    }
     desenharPostos(lista, combustivel);
 
     const comPreco = lista.filter(posto => posto.dadosPreco).length;
@@ -493,7 +626,7 @@ function aplicarFiltros() {
         }).length;
 
         if (semPreco > 0) {
-            mensagem += ` ${semPreco} sem preço informado para ${combustivel}.`;
+            mensagem += ` ${semPreco} sem preço informado para ${capitalizarTexto(combustivel.replace(/-/g, ' '))}.`;
         }
     }
 
@@ -511,7 +644,7 @@ function desenharPostos(postos, combustivel) {
     }
 }
 
-// Mostra o valor do raio num balão que acompanha a posição do controle
+// Mostra o valor do raio num balão, move o preenchimento do slider e atualiza o círculo
 function atualizarBalaoRaio() {
     const slider = $('selRaio');
     const min = Number(slider.min);
@@ -523,11 +656,11 @@ function atualizarBalaoRaio() {
     const balao = $('balao-raio');
 
     balao.textContent = `${valor} km`;
-    if (circuloBusca) circuloBusca.setRadius(valor * 1000);
+    balao.style.left = `calc(${percentual}% + ${8 - percentual * 0.16}px)`;
     slider.style.setProperty('--progress', `${percentual}%`);
+
+    if (circuloBusca) circuloBusca.setRadius(valor * 1000);
 }
-
-
 
 /* ========================================
    BUSCA DE POSTOS (ARQUIVO SALVO)
@@ -536,13 +669,33 @@ async function buscarPostos() {
     setStatus('Carregando os preços da ANP...');
     await prontoDados;
 
-    postosEncontrados = processarElementos(elementosOsm || []);
-    avisoFonte = ' Localização: postos cadastrados no OSM. Preços: ANP, quando a associação é possível.';
-    if (erroANP) avisoFonte += ' Não foi possível carregar a base de preços da ANP.';
-    if (!elementosOsm) avisoFonte = ' OSM indisponível: não foi possível confirmar a localização dos postos. Recarregue a página.';
+    if (!elementosOsm) {
+        postosEncontrados = [];
+        avisoFonte = ' OSM indisponível: não foi possível confirmar a localização dos postos. Recarregue a página.';
+        atualizarBandeiras();
+        aplicarFiltros();
+        return;
+    }
+
+    postosEncontrados = processarElementos(elementosOsm);
+    avisoFonte = montarAviso();
+    atualizarBandeiras();
     aplicarFiltros();
 }
 
+// Texto do status com a origem dos dados e a data de coleta da ANP
+function montarAviso() {
+    let aviso = ' Localização: postos do OpenStreetMap. Preços: ANP';
+
+    if (dataColetaANP) aviso += `, coletados em ${dataColetaANP}`;
+    aviso += '.';
+
+    if (erroANP) aviso += ' Não foi possível carregar a base de preços da ANP.';
+
+    return aviso;
+}
+
+// Converte elementos do OSM em postos com distância e preço ANP
 function processarElementos(elementos) {
     const postos = [];
 
@@ -564,6 +717,7 @@ function processarElementos(elementos) {
         });
     }
 
+    // Ordenação padrão: sempre pela distância
     postos.sort(function (a, b) {
         return a.distancia - b.distancia;
     });
@@ -593,35 +747,42 @@ function removerDuplicados(postos) {
    INFORMAÇÕES DO POSTO
    ======================================== */
 function nomeDoPosto(posto) {
-    return posto.tags?.name
+    const nome = posto.tags?.name
         || posto.dadosPreco?.FANTASIA
         || posto.dadosPreco?.['RAZÃO']
         || 'Posto de combustível';
+
+    return capitalizarTexto(nome);
 }
 
 function enderecoDoPosto(posto) {
     const p = posto.dadosPreco;
 
     if (p) {
-        return `${p.ENDEREÇO || ''}, ${p.NÚMERO || ''} - ${p.BAIRRO || ''}, ${p.MUNICÍPIO || ''}`;
+        return capitalizarTexto(`${p.ENDEREÇO || ''}, ${p.NÚMERO || ''} - ${p.BAIRRO || ''}, ${p.MUNICÍPIO || ''}`);
     }
 
     const tags = posto.tags || {};
     const partes = [tags['addr:street'], tags['addr:housenumber'], tags['addr:city']].filter(Boolean);
 
-    return partes.length > 0 ? partes.join(', ') : 'Endereço não informado';
+    return partes.length > 0 ? capitalizarTexto(partes.join(', ')) : 'Endereço não informado';
 }
 
-// Nome da marca em minúsculas, para virar o data-marca do topo do card (ex.: "RAIZEN" -> "raizen")
+// Valor do data-marca do topo do card; os nomes batem com o CSS
 function marcaDoPosto(posto) {
-    const marca = normalizarNome(posto.dadosPreco?.BANDEIRA || posto.tags?.brand).toLowerCase();
-    if (marca === 'branca') return 'branca';
+    const marca = normalizarNome(bandeiraDoPosto(posto));
+
     if (!marca) return 'sem-bandeira';
-    if (/shell|raizen/.test(marca)) return 'shell';
-    if (/vibra|petrobras|br distrib/.test(marca)) return 'petrobras';
-    if (/ipiranga/.test(marca)) return 'ipiranga';
-    if (/ale/.test(marca)) return 'ale';
+    if (/SHELL|RAIZEN/.test(marca)) return 'raizen';
+    if (/VIBRA|PETROBRAS|^BR$/.test(marca)) return 'vibra';
+    if (/IPIRANGA/.test(marca)) return 'ipiranga';
+    if (/\bALE\b/.test(marca)) return 'ale';
+
     return 'outra';
+}
+
+function bandeiraDoPosto(posto) {
+    return posto.dadosPreco?.BANDEIRA || posto.tags?.brand || '';
 }
 
 // Classe da bolinha de cada combustível (gasolina, etanol ou diesel)
@@ -635,12 +796,14 @@ function classeCombustivel(nome) {
     return '';
 }
 
-// Separa as variações sem mudar as cores dos combustíveis.
+// Separa as variações sem mudar as cores dos combustíveis
 function tipoCombustivel(nome) {
     const n = normalizarNome(nome);
+
     if (n.includes('GASOLINA') && n.includes('ADITIVADA')) return 'gasolina-aditivada';
     if (n.includes('DIESEL') && /S\s*10\b/.test(n)) return 'diesel-s10';
     if (n.includes('DIESEL') && /S\s*500\b/.test(n)) return 'diesel-s500';
+
     return classeCombustivel(nome);
 }
 
@@ -649,11 +812,13 @@ function htmlProdutos(posto, combustivel) {
         return '<p class="sem-preco">Preço da ANP não associado a este posto.</p>';
     }
 
-    const produtos = (posto.dadosPreco.PRODUTOS ?? [])
-        .filter(function (p) {
-            const ativo = document.querySelector(`[data-fuel="${tipoCombustivel(p.nome)}"]`);
-            return (!combustivel || p.nome === combustivel || tipoCombustivel(p.nome) === combustivel) && (!ativo || ativo.checked);
-        });
+    const selecionados = combustiveisEfetivos();
+    const tiposDisponiveis = [...document.querySelectorAll('[data-fuel]')].map(input => input.dataset.fuel);
+
+    const produtos = (posto.dadosPreco.PRODUTOS ?? []).filter(function (p) {
+        const tipo = tipoCombustivel(p.nome);
+        return !tiposDisponiveis.includes(tipo) || selecionados.includes(tipo);
+    });
 
     if (produtos.length === 0) {
         return '<p class="sem-preco">Preço não informado</p>';
@@ -662,9 +827,9 @@ function htmlProdutos(posto, combustivel) {
     const itens = produtos.map(function (p) {
         return `
         <li class="${classeCombustivel(p.nome)}">
-            <span class="nome-combustivel">${escaparHTML(p.nome.toLowerCase())}</span>
+            <span class="nome-combustivel">${escaparHtml(capitalizarTexto(p.nome))}</span>
             <span class="preco">${formatarPreco(p.preco)}</span>
-            <span class="data-coleta">Coleta: ${escaparHTML(p.dt_coleta)}</span>
+            <span class="data-coleta">Coleta: ${escaparHtml(p.dt_coleta)}</span>
         </li>`;
     }).join('');
 
@@ -674,24 +839,20 @@ function htmlProdutos(posto, combustivel) {
 /* ========================================
    MARCADOR E CARD
    ======================================== */
-// Mostra um único preço somente quando o filtro identifica um combustível.
+// Produto mostrado no pin; só existe quando um único combustível está escolhido
 function produtoNoMapa(posto, combustivel) {
-    const selecionados = document.querySelectorAll('[data-fuel]:checked');
-    if (!combustivel && selecionados.length !== 1) return null;
+    if (!combustivel) return null;
 
-    const produtos = (posto.dadosPreco?.PRODUTOS || []).filter(function (produto) {
-        if (combustivel) return produto.nome === combustivel || tipoCombustivel(produto.nome) === combustivel;
-        return tipoCombustivel(produto.nome) === selecionados[0].dataset.fuel;
+    const produtos = (posto.dadosPreco?.PRODUTOS ?? []).filter(function (produto) {
+        return tipoCombustivel(produto.nome) === combustivel;
     });
 
-    // Prefere gasolina comum e diesel S10 quando existem variações na base.
-    return produtos.find(function (produto) {
-        return produto.nome === 'GASOLINA COMUM' || produto.nome === 'DIESEL S10';
-    }) || produtos[0];
+    return produtos[0] || null;
 }
 
 function adicionarMarcador(posto, combustivel) {
     if (!map) return;
+
     const produto = produtoNoMapa(posto, combustivel);
 
     const icone = L.divIcon({
@@ -704,14 +865,16 @@ function adicionarMarcador(posto, combustivel) {
 
     const marcador = L.marker([posto.lat, posto.lng], {
         icon: icone,
-        title: produto ? produto.nome + ': ' + formatarPreco(produto.preco) + ' — coleta: ' + produto.dt_coleta : nomeDoPosto(posto)
+        title: produto
+            ? `${capitalizarTexto(produto.nome)}: ${formatarPreco(produto.preco)} — coleta: ${produto.dt_coleta}`
+            : nomeDoPosto(posto)
     })
         .addTo(map)
         .bindPopup(`
             <div class="popup-posto">
-                <strong>⛽ ${escaparHTML(nomeDoPosto(posto))}</strong><br>
-                ${escaparHTML(enderecoDoPosto(posto))}<br><br>
-                <strong>${formatarDistancia(posto.distancia)}</strong>
+                <strong>⛽ ${escaparHtml(nomeDoPosto(posto))}</strong><br>
+                ${escaparHtml(enderecoDoPosto(posto))}<br><br>
+                <strong>${escaparHtml(formatarDistancia(posto.distancia))}</strong>
             </div>
         `);
 
@@ -728,44 +891,105 @@ function adicionarMarcador(posto, combustivel) {
 
 function adicionarCard(posto, combustivel) {
     const urlMapas = `https://www.google.com/maps/search/?api=1&query=${posto.lat},${posto.lng}`;
-    const bandeira = posto.dadosPreco?.BANDEIRA || posto.tags?.brand || 'Sem bandeira';
-    const marca = marcaDoPosto(posto);
-    const logo = logoBandeira(bandeira);
+    const nome = nomeDoPosto(posto);
 
     const card = document.createElement('div');
     card.className = 'posto';
     card.tabIndex = 0;
     card.setAttribute('role', 'button');
-    card.setAttribute('aria-label', `Ver ${nomeDoPosto(posto)} no mapa`);
+    card.setAttribute('aria-label', `Ver ${nome} no mapa`);
+
     card.addEventListener('keydown', function (evento) {
         if (evento.target !== card) return;
+
         if (evento.key === 'Enter' || evento.key === ' ') {
             evento.preventDefault();
             card.click();
         }
     });
+
     card.innerHTML = `
-        <div class="posto-topo" data-marca="${marca}">
-            <span class="logo-marca">${logo}</span>
+        <div class="posto-topo" style="background:${escaparHtml(fundoTopoDoPosto(posto))}">
+            <span class="logo-marca">${logoBandeira(bandeiraDoPosto(posto))}</span>
         </div>
         <div class="posto-cabecalho">
-            <h3>${escaparHTML(nomeDoPosto(posto))}</h3>
-            <span class="distancia">${formatarDistancia(posto.distancia)}</span>
+            <h3>${escaparHtml(nome)}</h3>
+            <span class="distancia">${escaparHtml(formatarDistancia(posto.distancia))}</span>
         </div>
-        <p class="endereco">${escaparHTML(enderecoDoPosto(posto))}</p>
+        <p class="endereco">${escaparHtml(enderecoDoPosto(posto))}</p>
         ${htmlProdutos(posto, combustivel)}
-        <a href="${urlMapas}" target="_blank" rel="noopener noreferrer">
+        <a href="${escaparHtml(urlMapas)}" target="_blank" rel="noopener noreferrer">
             Ver rota no Google Maps →
         </a>
     `;
 
+    // O link abre o Google Maps e não deve também centralizar o mapa
     card.querySelector('a').addEventListener('click', function (evento) {
         evento.stopPropagation();
     });
+
     card.addEventListener('click', function () {
         if (map) map.setView([posto.lat, posto.lng], 17);
     });
+
     $('postos').appendChild(card);
+}
+
+/* ========================================
+   BOAS-VINDAS, INFORMAÇÕES E FILTROS RECOLHÍVEIS
+   ======================================== */
+// Copia as escolhas do diálogo inicial para os controles da página
+function aplicarPreferenciasIniciais() {
+    $('selRaio').value = $('welcomeRaio').value;
+    atualizarBalaoRaio();
+
+    const tipo = $('welcomeCombustivel').value;
+    document.querySelectorAll('[data-fuel]').forEach(function (input) {
+        input.checked = input.dataset.fuel === tipo;
+    });
+}
+
+function enviarBoasVindas(evento) {
+    evento.preventDefault();
+
+    const endereco = $('welcomeEndereco').value.trim();
+
+    if (!endereco) {
+        $('welcomeError').textContent = 'Digite um endereço para buscar.';
+        $('welcomeEndereco').focus();
+        return;
+    }
+
+    $('welcomeError').textContent = '';
+    $('endereco').value = endereco;
+    aplicarPreferenciasIniciais();
+    fecharDialog($('welcome'));
+    buscarEndereco(endereco);
+}
+
+function usarGpsBoasVindas() {
+    aplicarPreferenciasIniciais();
+    fecharDialog($('welcome'));
+    obterLocalizacaoGPS();
+}
+
+function abrirInfo(chave) {
+    const [titulo, texto] = config.textosInfo[chave];
+
+    $('infoTitle').textContent = titulo;
+    $('infoText').textContent = texto;
+    abrirDialog($('infoDialog'));
+}
+
+function alternarFiltros() {
+    const botao = $('toggleFiltros');
+    const recolhido = $('app').classList.toggle('collapsed');
+
+    botao.textContent = recolhido ? '›' : '‹';
+    botao.setAttribute('aria-expanded', String(!recolhido));
+    botao.setAttribute('aria-label', recolhido ? 'Expandir filtros' : 'Recolher filtros');
+
+    if (map) map.invalidateSize();
 }
 
 /* ========================================
@@ -773,12 +997,8 @@ function adicionarCard(posto, combustivel) {
    ======================================== */
 function registrarEventos() {
     $('selRaio').addEventListener('input', atualizarBalaoRaio);
-    $('selRaio').addEventListener('change', function () {
-        if (map && circuloBusca) {
-            map.fitBounds(circuloBusca.getBounds(), { padding: [20, 20] });
-        }
-    });
-    atualizarBalaoRaio();
+    $('selRaio').addEventListener('change', aplicarFiltros);
+
     $('btnLocalizacao').addEventListener('click', obterLocalizacaoGPS);
 
     $('btnEndereco').addEventListener('click', function () {
@@ -787,67 +1007,53 @@ function registrarEventos() {
 
     $('endereco').addEventListener('input', aoDigitar);
 
-    // Todos os filtros só reaplicam a lista; o checkbox "apenas ANP" é controlado pelo usuário
-    for (const id of ['selRaio', 'selBandeira', 'selOrdenacao', 'chkApenasANP']) {
-        $(id).addEventListener('change', aplicarFiltros);
-    }
+    $('endereco').addEventListener('keydown', function (evento) {
+        if (evento.key === 'Enter') {
+            evento.preventDefault();
+            $('btnEndereco').click();
+        }
+    });
+
+    $('selBandeira').addEventListener('change', aplicarFiltros);
+    $('selOrdenacao').addEventListener('change', aplicarFiltros);
+    $('chkApenasANP').addEventListener('change', aplicarFiltros);
+
+    document.querySelectorAll('[data-fuel]').forEach(function (input) {
+        input.addEventListener('change', aplicarFiltros);
+    });
+
+    $('toggleFiltros').addEventListener('click', alternarFiltros);
+
+    document.querySelectorAll('[data-info]').forEach(function (botao) {
+        botao.addEventListener('click', function () {
+            abrirInfo(botao.dataset.info);
+        });
+    });
+
+    $('closeInfo').addEventListener('click', function () {
+        fecharDialog($('infoDialog'));
+    });
+
+    $('navPostos').addEventListener('click', function (evento) {
+        evento.preventDefault();
+        document.querySelector('.conteudo').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    $('welcomeRaio').addEventListener('input', function () {
+        $('welcomeOutput').textContent = `${$('welcomeRaio').value} km`;
+    });
+
+    $('welcomeForm').addEventListener('submit', enviarBoasVindas);
+    $('welcomeGps').addEventListener('click', usarGpsBoasVindas);
 
     document.addEventListener('click', function (click) {
         if (!click.target.closest('.localizacao-manual')) limparSugestoes();
     });
+
+    atualizarBalaoRaio();
 }
 
 registrarEventos();
+setStatus('Escolha um endereço ou use sua localização para começar.');
 prontoDados = Promise.all([carregarANP(), carregarOsm(), carregarLogos()]);
-// Converte texto para HTML sem interpretar tags vindas dos dados.
-function escaparHTML(valor) {
-    const texto = document.createElement('span');
-    texto.textContent = valor ?? '';
-    return texto.innerHTML;
-}
-
-$('toggleFiltros').addEventListener('click', () => {
-    const recolhido = $('app').classList.toggle('collapsed');
-    $('toggleFiltros').textContent = recolhido ? '›' : '‹';
-    $('toggleFiltros').setAttribute('aria-expanded', String(!recolhido));
-    $('toggleFiltros').setAttribute('aria-label', recolhido ? 'Expandir filtros' : 'Recolher filtros');
-    if (map) map.invalidateSize();
-});
-document.querySelectorAll('[data-fuel]').forEach(input => input.addEventListener('change', aplicarFiltros));
-$('endereco').addEventListener('keydown', function (evento) {
-    if (evento.key === 'Enter') {
-        evento.preventDefault();
-        $('btnEndereco').click();
-    }
-});
-$('welcomeRaio').addEventListener('input', () => { $('welcomeOutput').textContent = $('welcomeRaio').value + ' km'; });
-$('welcomeForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    const endereco = $('welcomeEndereco').value.trim();
-    if (!endereco) {
-        $('welcomeError').textContent = 'Digite um endereço para buscar.';
-        $('welcomeEndereco').focus();
-        return;
-    }
-    $('endereco').value = endereco;
-    $('selRaio').value = $('welcomeRaio').value;
-    atualizarBalaoRaio();
-    const tipo = $('welcomeCombustivel').value;
-    document.querySelectorAll('[data-fuel]').forEach(input => { input.checked = input.dataset.fuel === tipo; });
-    $('welcome').close();
-    await buscarEndereco(endereco);
-});
-const textosInfo = {
-    sobre: ['Sobre o PI', 'O EncontraA! é um projeto acadêmico do grupo 3 para localizar postos de combustível e comparar os preços disponíveis na base da ANP. Os valores e a disponibilidade podem mudar; confirme com o estabelecimento.'],
-    dicas: ['Dicas para abastecer', 'Compare os preços e a distância antes de escolher um posto. Para comparar etanol e gasolina, considere o consumo real do seu veículo. Confira a data de coleta dos dados antes de abastecer.'],
-    perfil: ['Perfil', 'A busca está disponível sem cadastro. O projeto ainda não possui autenticação de usuários.']
-};
-document.querySelectorAll('[data-info]').forEach(button => button.addEventListener('click', () => {
-    const [titulo, texto] = textosInfo[button.dataset.info];
-    $('infoTitle').textContent = titulo; $('infoText').textContent = texto; $('infoDialog').showModal();
-}));
-$('closeInfo').addEventListener('click', () => $('infoDialog').close());
-$('navPostos').addEventListener('click', e => { e.preventDefault(); document.querySelector('.conteudo').scrollIntoView({ behavior: 'smooth' }); });
-// Local inicial do mapa; a busca permite escolher qualquer outro endereço.
-usarLocalizacao(-20.5216968, -47.4095364, 'Carregando postos de Franca...');
-$('welcome').showModal();
+abrirDialog($('welcome'));

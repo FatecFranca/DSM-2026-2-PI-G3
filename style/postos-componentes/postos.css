@@ -152,15 +152,15 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-wrap: nowrap; /* Impede estritamente que os itens quebrem de linha */
-    gap: 12px;         /* Espaçamento uniforme entre os produtos */
+    flex-wrap: nowrap; 
+    gap: 12px;     
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
 .lista-produtos li {
-    flex: 0 0 auto;    /* Garante que os itens mantenham seu tamanho natural sem espremer ou quebrar */
+    flex: 0 0 auto;    
     text-align: center;
 }
 
@@ -170,13 +170,13 @@
     height: auto;
     min-height: 20px;
     padding-left: 20px;
-    background-size: 18px 18px;     /* Tamanho padrão proporcional */
+    background-size: 18px 18px;
     background-repeat: no-repeat;
     background-position: left center;
     font-size: 14px;
     line-height: 20px;
     color: #333;
-    text-align: left;              /* <-- Força o texto a alinhar perfeitamente pela esquerda */
+    text-align: left;              
     white-space: nowrap;
     text-overflow: ellipsis;
 }

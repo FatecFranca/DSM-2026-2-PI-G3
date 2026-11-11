@@ -52,7 +52,7 @@
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    background-image: url('../../img/icones/seta_ordenar.svg'); /* Opcional: seu próprio ícone */
+    background-image: url('../../img/icones/seta_ordenar.svg');
     background-repeat: no-repeat;
     background-position: right 10px center;
     padding-right: 30px;

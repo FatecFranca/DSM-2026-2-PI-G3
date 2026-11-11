@@ -7,13 +7,13 @@
     --orange: #ff7915;
     --gray: #f4f4f4;
     --text: #454545;
-    --layout-max-width: 1440px;
-    --sidebar-width: 396px;
+    --layout-max-width: 1558px;
+    --sidebar-width: 428px;
     --sidebar-collapsed-width: 30px;
-    --figma-column-width: 80px;
-    --figma-gutter: 24px;
-    --figma-grid-width: 1224px;
-    --figma-edge-max: 108px;
+    --figma-column-width: 87px;
+    --figma-gutter: 26px;
+    --figma-grid-width: 1324px;
+    --figma-edge-max: 171px;
 }
 
 * {

@@ -19,7 +19,7 @@
 }
 
 .ordenacao-resultados select {
-    width: 155px;
+    width: 185px;
     background: #fff;
 }
 
@@ -151,7 +151,7 @@
 .lista-produtos {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px 10px;
+    gap: 12px 32px;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -162,7 +162,6 @@
     min-width: 0;
     height: 54px;
     font-size: 11px;
-    overflow: hidden;
 }
 
 .lista-produtos li .nome-combustivel {
@@ -178,7 +177,6 @@
     line-height: 20px;
     color: #333;
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
 }
 
@@ -196,9 +194,10 @@
     display: block;
     padding-left: 28px;
     margin-top: 2px;
-    font-size: 10px;
+    font-size: 8px;
     color: #666;
     white-space: nowrap;
+    text-overflow: hidden;
 }
 
 /* ========================================

@@ -20,7 +20,7 @@ const ESCAPES_HTML = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'
 // Escapa dados externos (ANP, OpenStreetMap, bandeiras) antes de inserir no HTML
 const escaparHtml = (valor) => String(valor ?? '').replace(/[&<>"']/g, (c) => ESCAPES_HTML[c]);
 
-const formatarDistancia = (km) => km < 1 ? `${Math.round(km * 1000)} metros` : `${km.toFixed(1)} km`;
+const formatarDistancia = (km) => km < 1 ? `${Math.round(km * 1000)} m` : `${km.toFixed(1)} km`;
 
 const formatarPreco = (valor) => `R$ ${Number(valor).toFixed(2).replace('.', ',')}`;
 
@@ -233,6 +233,15 @@ export function adicionarMarcador(posto, combustivel) {
     }
 }
 
+function deParaNomeExibicao(nome) {
+    const n = normalizarNome(nome);
+
+    if (n === 'GASOLINA COMUM') return 'Gasolina C.';
+    if (n === 'GASOLINA ADITIVADA') return 'Gasolina A.';
+
+    return capitalizarTexto(nome);
+}
+
 function htmlProdutos(posto, combustivel) {
     if (!posto.dadosPreco) {
         return '<p class="sem-preco">Preço da ANP não associado a este posto.</p>';
@@ -253,9 +262,9 @@ function htmlProdutos(posto, combustivel) {
     const itens = produtos.map(function (p) {
         return `
         <li>
-            <span class="nome-combustivel ${classeCombustivel(p.nome)}">${escaparHtml(capitalizarTexto(p.nome))}</span>
+            <span class="nome-combustivel ${classeCombustivel(p.nome)}">${escaparHtml(deParaNomeExibicao(p.nome))}</span>
             <span class="preco">${formatarPreco(p.preco)}</span>
-            <span class="data-coleta">Coleta: ${escaparHtml(p.dt_coleta)}</span>
+            <span class="data-coleta">Coleta: ${escaparHtml(p.dt_coleta.replace(/-/g, '/').replace('2026', '26'))}</span>
         </li>`;
     }).join('');
 

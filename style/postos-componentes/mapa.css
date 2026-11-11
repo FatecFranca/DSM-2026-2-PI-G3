@@ -1,0 +1,74 @@
+/* ========================================
+   MAPA
+   ======================================== */
+#map {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: 410px;
+    z-index: 0;
+    background: #e5ebdd;
+}
+
+.leaflet-control-zoom {
+    display: none;
+}
+
+.leaflet-container {
+    font-family: Arial, sans-serif;
+}
+
+.toggle-filtros {
+    position: absolute;
+    left: -22px;
+    bottom: -7px;
+    z-index: 1;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    background: var(--orange);
+    color: #fff;
+    font: 36px/24px Arial;
+}
+
+.pin-preco span {
+    position: relative;
+    display: block;
+    width: 17px;
+    height: 23px;
+    background: var(--orange);
+    clip-path: polygon(50% 100%, 5% 45%, 0 25%, 14% 7%, 50% 0, 86% 7%, 100% 25%, 95% 45%);
+}
+
+.pin-preco span:after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #fff;
+}
+
+.pin-usuario span {
+    display: block;
+    width: 15px;
+    height: 15px;
+    background: var(--green);
+    border: 3px solid #fff;
+    border-radius: 50%;
+}
+
+.leaflet-tooltip.preco-mapa {
+    padding: 3px 5px;
+    border: 1px solid #ffd4b5;
+    border-radius: 6px;
+    background: #fff;
+    color: #555;
+    font-size: 11px;
+    line-height: 14px;
+    box-shadow: 0 1px 3px #0002;
+}

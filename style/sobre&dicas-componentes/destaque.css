@@ -1,0 +1,34 @@
+.destaque {
+    margin-top: 40px;
+    padding: 45px 25px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #80d900, #a5e94a);
+    color: white;
+    text-align: center;
+}
+
+.destaque h2 {
+    margin-bottom: 15px;
+    font-size: 27px;
+}
+
+.destaque p {
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.botao {
+    display: inline-block;
+    padding: 14px 30px;
+    border-radius: 30px;
+    background-color: #ff8515;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.botao:hover {
+    background-color: #e66f00;
+    transform: scale(1.04);
+}

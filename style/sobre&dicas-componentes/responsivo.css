@@ -1,0 +1,36 @@
+
+@media (max-width: 768px) {
+    .cabecalho {
+        height: auto;
+        padding: 20px;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    nav a {
+        padding: 12px 18px;
+        font-size: 15px;
+    }
+
+    .perfil {
+        display: none;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .titulo-pagina h1 {
+        font-size: 29px;
+    }
+
+    .card-sobre {
+        padding: 25px;
+    }
+}

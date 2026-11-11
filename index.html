@@ -7,7 +7,7 @@
     <title>PI | EncontraA! — Postos próximos</title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./style/postos.css">
 </head>
 <body>
     <header class="topo">
@@ -17,8 +17,8 @@
 
         <nav class="menu" aria-label="Navegação principal">
             <a href="#" class="ativo" id="navPostos">Postos</a>
-            <button type="button" data-info="sobre">Sobre</button>
-            <button type="button" data-info="dicas">Dicas</button>
+            <a href="./pages/sobre.html" id="navSobre">Sobre</a>
+            <a href="./pages/dicas.html" id="navDicas">Dicas</a>
         </nav>
 
         <button class="avatar" type="button" aria-label="Informações de perfil" data-info="perfil">
@@ -28,24 +28,32 @@
 
     <div class="app" id="app">
         <aside class="sidebar" id="filtros" aria-label="Filtros de busca">
+            <div class="efeito-gradiente"></div>
+
             <section class="grupo">
                 <h2>
-                    <span class="search-icon" aria-hidden="true"></span>
+                    <span class="search-icon" aria-hidden="true">
+                        <img src="./img/icones/lupa.svg" alt="">
+                    </span>
                     Buscar endereço
                 </h2>
 
-            <input id="endereco" aria-label="Seu endereço" placeholder="Av. Brasil, 500" autocomplete="street-address">
+                <input id="endereco" aria-label="Seu endereço" placeholder="Franca Av. Chico Júlio" autocomplete="street-address">
+                <div id="sugestoes" class="sugestoes-box"></div>
 
-
-            <button id="btnLocalizacao" class="btn-gps" type="button">
-                <img src="./img/gps.svg" alt="" aria-hidden="true">
-                Usar minha localização
-            </button>
+                <button id="btnLocalizacao" class="btn-gps" type="button">
+                    <img src="./img/gps.svg" alt="" aria-hidden="true">
+                    Usar minha localização
+                </button>
             </section>
+
+            <hr>
 
             <section class="grupo">
                 <h2>
-                    <span class="location-icon" aria-hidden="true"></span>
+                    <span class="location-icon" aria-hidden="true">
+                        <img src="./img/icones/pin_verde.svg" alt="">
+                    </span>
                     Raio de busca
                 </h2>
 
@@ -55,45 +63,46 @@
                 </div>
             </section>
 
+            <hr>
+
             <section class="grupo fuel-group">
                 <h2>
-                    <span class="pump" aria-hidden="true">▣</span>
+                    <span class="gas-icon" aria-hidden="true">
+                        <img src="./img/icones/bomba_verde.svg" alt="">
+                    </span>
                     Combustível
                 </h2>
 
                 <label class="fuel">
-                    <span><i class="drop gasolina"></i>Gasolina</span>
+                    <span><i class="drop"><img src="./img/icones/gasolina.svg" alt=""></i>Gasolina</span>
                     <input type="checkbox" data-fuel="gasolina">
                 </label>
 
                 <label class="fuel">
-                    <span><i class="drop gasolina"></i>Gasolina aditivada</span>
+                    <span><i class="drop"><img src="./img/icones/gasolina.svg" alt=""></i>Gasolina aditivada</span>
                     <input type="checkbox" data-fuel="gasolina-aditivada">
                 </label>
 
                 <label class="fuel">
-                    <span><i class="drop etanol"></i>Etanol</span>
+                    <span><i class="drop"><img src="./img/icones/etanol.svg" alt=""></i>Etanol</span>
                     <input type="checkbox" data-fuel="etanol">
                 </label>
 
                 <label class="fuel">
-                    <span><i class="drop diesel"></i>Diesel</span>
-                    <input type="checkbox" data-fuel="diesel">
-                </label>
-
-                <label class="fuel">
-                    <span><i class="drop diesel"></i>Diesel S10</span>
+                    <span><i class="drop"><img src="./img/icones/diesel.svg" alt=""></i>Diesel S10</span>
                     <input type="checkbox" data-fuel="diesel-s10">
                 </label>
 
                 <label class="fuel">
-                    <span><i class="drop diesel"></i>Diesel S500</span>
+                    <span><i class="drop"><img src="./img/icones/diesel.svg" alt=""></i>Diesel S500</span>
                     <input type="checkbox" data-fuel="diesel-s500">
                 </label>
 
                 <p id="avisoMapa" class="aviso-mapa" role="status">
                     Para ver preços no mapa, marque apenas um combustível.
                 </p>
+
+                <hr>
 
                 <div class="advanced">
                     <span id="rotuloBandeira">Bandeira</span>
@@ -113,8 +122,12 @@
                     </label>
                 </div>
 
+                <hr>
+
                 <button class="buscar" id="btnEndereco" type="button">
-                    <span class="search-icon" aria-hidden="true"></span>
+                    <span aria-hidden="true">
+                        <img src="./img/icones/lupa_branca.svg" alt="">
+                    </span>
                     Buscar
                 </button>
             </section>
@@ -125,7 +138,7 @@
                 <div id="map" aria-label="Mapa dos postos próximos"></div>
 
                 <button id="toggleFiltros" class="toggle-filtros" aria-label="Recolher filtros" aria-controls="filtros" aria-expanded="true">
-                    ‹
+                    <img src="./img/icones/recolher.svg" alt="">
                 </button>
             </div>
 
@@ -142,7 +155,6 @@
 
                 <div id="postos"></div>
                 <p id="status" role="status"></p>
-
             </section>
         </main>
     </div>
@@ -153,7 +165,7 @@
 
             <h1>Digite seu endereço</h1>
 
-            <input id="welcomeEndereco" aria-label="Seu endereço" placeholder="Av. Brasil, 500" autocomplete="street-address">
+            <input id="welcomeEndereco" aria-label="Seu endereço" placeholder="Franca Av. Chico Júlio" autocomplete="street-address">
 
             <p class="ou">ou</p>
 
@@ -163,23 +175,32 @@
             </button>
 
             <div class="welcome-radius">
-                <span class="location-icon" aria-hidden="true"></span>
+                <span class="location-icon" aria-hidden="true">
+                    <img src="./img/icones/pin_verde.svg" alt="">
+                </span>
                 <input type="range" id="welcomeRaio" min="1" max="15" value="5" aria-label="Raio em quilômetros">
                 <output id="welcomeOutput" for="welcomeRaio">5km</output>
             </div>
 
-            <label class="welcome-select">
-                <span class="pump-icon" aria-hidden="true">▣</span>
+            <div class="welcome-select">
+                <img class="pump-icon" src="./img/icones/bomba_cinza.svg" alt="">
+
                 <select id="welcomeCombustivel" aria-label="Selecione o combustível">
                     <option value="">Selecione o combustível</option>
                     <option value="gasolina">Gasolina</option>
                     <option value="etanol">Etanol</option>
                     <option value="diesel">Diesel</option>
                 </select>
-            </label>
+
+                <span class="select-arrow" aria-hidden="true">
+                    <img src="./img/icones/seta_ordenar.svg" alt="">
+                </span>
+            </div>
 
             <button class="buscar" type="submit">
-                <span class="search-icon" aria-hidden="true"></span>
+                <span aria-hidden="true">
+                    <img src="./img/icones/lupa_branca.svg" alt="">
+                </span>
                 Buscar
             </button>
 
@@ -188,7 +209,9 @@
     </dialog>
 
     <dialog id="infoDialog" class="info-dialog">
-        <button id="closeInfo" aria-label="Fechar" class="close-info">×</button>
+        <button id="closeInfo" aria-label="Fechar" class="close-info">
+            <img src="./img/icones/estender.svg" alt="">
+        </button>
 
         <h2 id="infoTitle"></h2>
 

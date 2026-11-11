@@ -334,8 +334,8 @@
   },
   "VIBRA": {
     "nome": "VIBRA",
-    "logo": "./img/bandeiras/vibra.svg",
-    "fundoLogo": "#ffffff",
+    "logo": "./img/bandeiras/petrobras-logo.png",
+    "fundoLogo": "#009d38",
     "fundoTopo": "#009d38",
     "fonte": "https://www.logo.wine/logo/Petrobras",
     "imagemOriginal": "https://www.logo.wine/a/logo/Petrobras/Petrobras-Logo.wine.svg",

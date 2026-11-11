@@ -1,0 +1,61 @@
+/* ========================================
+   ÍCONES
+   ======================================== */
+.search-icon img{
+    width: 23px;
+    height: 23px;
+
+}
+
+
+.location-icon img {
+    display: block;
+    position: relative;
+    flex-shrink: 0;
+    width: 17px;
+    height: 22px;
+}
+
+
+.gas-icon img {
+    width: 23px;
+    height: 23px;
+}
+
+.drop img{
+    width: 23px;
+    height: 23px;
+}
+
+.gasolina, .etanol, .diesel {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    background-size: 24px 24px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.gasolina {
+    background-image: url('../../img/icones/gasolina.svg');
+}
+
+.etanol {
+    background-image: url('../../img/icones/etanol.svg');
+}
+
+.diesel {
+    background-image: url('../../img/icones/diesel.svg');
+}
+
+/* Remove a aparência padrão e a setinha nativa */
+#selOrdenacao {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('../../img/icones/seta_ordenar.svg'); /* Opcional: seu próprio ícone */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+
+}

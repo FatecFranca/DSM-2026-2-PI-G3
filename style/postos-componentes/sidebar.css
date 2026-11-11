@@ -1,0 +1,333 @@
+/* ========================================
+   BARRA LATERAL
+   ======================================== */
+.sidebar {
+    position: relative;
+    padding: 24px 38px;
+    background: var(--gray);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.app.collapsed {
+    grid-template-columns: 30px minmax(0, 1fr);
+}
+
+.collapsed .sidebar {
+    display: none;
+}
+
+.collapsed .conteudo {
+    grid-column: 2;
+}
+
+.collapsed .toggle-filtros {
+    left: -19px;
+}
+
+.collapsed #postos {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.collapsed .lista-container {
+    padding: 26px 40px 28px 30px;
+}
+
+.efeito-gradiente {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 35px; 
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.08), transparent);
+    pointer-events: none; 
+}
+
+.grupo {
+    padding: 0;
+}
+
+.fuel-group {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border: 0;
+}
+
+.grupo h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 12px;
+    font-size: 20px;
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+hr {
+    margin-top: 16px;
+    margin-bottom: 16px;
+    border: 1px solid #D4D4D4;
+}
+
+input:not([type=range]):not([type=checkbox]),
+select {
+    width: 100%;
+    padding: 9px 13px;
+    border: 1px solid #c7c7c7;
+    border-radius: 15px;
+    background: transparent;
+    font-size: 13px;
+    color: #555;
+}
+
+input::placeholder {
+    color: #aaa;
+}
+
+.localizacao-manual {
+    position: relative;
+}
+
+.sugestoes-box:not(:empty) {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    max-height: 240px;
+    overflow: auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 3px 12px #0002;
+}
+
+#btnLocalizacao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    margin-top: 10px;
+    padding: 7px 5px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    background: #e9e9e9;
+    color: #555;
+    font-size: 16px;
+    line-height: 1;
+}
+
+#btnLocalizacao img {
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+
+#btnLocalizacao:hover {
+    background: #dfe4da;
+}
+
+#btnLocalizacao:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+/* ========================================
+   RAIO
+   ======================================== */
+.raio-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.raio-wrapper output {
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+input[type=range] {
+    width: 100%;
+    min-width: 0;
+    height: 5px;
+    margin: 8px 0;
+    accent-color: var(--green);
+    cursor: pointer;
+}
+
+/* ========================================
+   COMBUSTÍVEIS
+   ======================================== */
+.fuel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 15px 0;
+    font-size: 13px;
+}
+
+.fuel > span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.fuel input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--green);
+}
+
+.aviso-mapa {
+    margin-top: 18px;
+    font-size: 11px;
+    line-height: 1.5;
+    color: #666;
+}
+
+/* ========================================
+   BANDEIRAS E FILTROS AVANÇADOS
+   ======================================== */
+.advanced {
+    margin-top: 28px;
+    font-size: 12px;
+    color: #777;
+}
+
+.advanced label {
+    display: block;
+    margin-top: 12px;
+}
+
+.advanced select {
+    margin-top: 6px;
+}
+
+.menu-bandeiras {
+    position: relative;
+    margin-top: 6px;
+    font-size: 12px;
+}
+
+.menu-bandeiras summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 10px;
+    border: 1px solid #c7c7c7;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.menu-bandeiras summary::after {
+    content: '▾';
+    margin-left: auto;
+}
+
+#listaBandeiras {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    max-height: 270px;
+    overflow: auto;
+    padding: 5px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px #0002;
+}
+
+#listaBandeiras button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    margin: 0;
+    padding: 7px;
+    border: 0;
+    border-radius: 12px;
+    background: #fff;
+    color: #444;
+    font-size: 11px;
+    text-align: left;
+}
+
+#listaBandeiras button:hover {
+    background: #f0f8e9;
+}
+
+.mini-bandeira {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    min-width: 42px;
+    height: 30px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    font-size: 8px;
+}
+
+.mini-bandeira img {
+    width: 36px;
+    height: 26px;
+    object-fit: contain;
+}
+
+.mini-bandeira .logo-original {
+    width: 100%;
+    height: 100%;
+    padding: 2px;
+}
+
+.mini-bandeira .selo-sem-bandeira {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #b1b1b1;
+}
+
+.logo-original {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 4px;
+}
+
+/* ========================================
+   BOTÕES
+   ======================================== */
+.buscar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-width: 115px;
+    margin: 32px auto 0;
+    padding: 9px 22px;
+    border: 0;
+    border-radius: 15px;
+    background: var(--green);
+    color: #fff;
+    font-size: 14px;
+}
+
+.buscar:hover {
+    background: #6cc000;
+}
+
+.buscar .search-icon {
+    width: 12px;
+    height: 12px;
+    border-color: #fff;
+}
+
+.buscar .search-icon:after {
+    background: #fff;
+}

@@ -1,0 +1,10 @@
+footer {
+    position: fixed;
+    width: 100%; /* Ocupa toda a largura */
+    padding: 25px;
+    background-color: white;
+    color: #777;
+    font-size: 14px;
+    text-align: center;
+    bottom: 0;   /* Cola na borda inferior da tela */
+}

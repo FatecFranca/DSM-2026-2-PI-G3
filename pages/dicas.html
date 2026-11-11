@@ -8,20 +8,20 @@
 </head>
 <body>
 
-    <header class="cabecalho">
-
-        <a href="index.html" class="logo">
-            Encontra<span>A!</span>
+    <header class="topo">
+        <a class="logo" href="../index.html" aria-label="EncontraA! Início">
+            <img src="../img/logo.png" alt="EncontraA!">
         </a>
 
-        <nav>
-            <a href="index.html">Postos</a>
-            <a href="../pages/sobre.html">Sobre</a>
-            <a href="../pages/dicas.html" class="ativo">Dicas</a>
+        <nav class="menu" aria-label="Navegação principal">
+            <a href="../index.html" id="navPostos">Postos</a>
+            <a href="./sobre.html" id="navSobre">Sobre</a>
+            <a href="./dicas.html" class="ativo" id="navDicas">Dicas</a>
         </nav>
 
-        <div class="perfil">●</div>
-
+        <button class="avatar" type="button" aria-label="Informações de perfil">
+            <img src="../img/user_Default.png" alt="">
+        </button>
     </header>
 
     <main class="conteudo">
@@ -124,7 +124,7 @@
                 de combustíveis próximos de você!
             </p>
 
-            <a href="index.html" class="botao">
+            <a href="../index.html" class="botao" id="btnBuscarPostos">
                 Buscar postos agora
             </a>
 
@@ -136,5 +136,6 @@
         <p>© 2026 EncontraA! - Todos os direitos reservados.</p>
     </footer>
 
+    <script type="module" src="../scripts/navegacao.js"></script>
 </body>
 </html>

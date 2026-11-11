@@ -1,0 +1,48 @@
+.conteudo {
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 0 25px;
+}
+
+.titulo-pagina {
+    margin-bottom: 45px;
+    text-align: center;
+}
+
+.subtitulo {
+    color: #80d900;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.titulo-pagina h1 {
+    margin: 15px 0;
+    color: #333;
+    font-size: 38px;
+}
+
+.titulo-pagina p {
+    color: #777;
+    font-size: 17px;
+}
+
+.card-sobre {
+    margin-bottom: 30px;
+    padding: 40px;
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+
+.card-sobre h2 {
+    margin: 15px 0;
+    color: #ff8515;
+}
+
+.card-sobre p {
+    margin-top: 10px;
+    color: #666;
+    line-height: 1.8;
+}

@@ -1,0 +1,20 @@
+
+/* ========================================
+   LAYOUT
+   ======================================== */
+.app {
+    display: grid;
+    grid-template-columns: 396px minmax(0, 1fr);
+    min-height: calc(100vh - 74px);
+}
+
+.conteudo {
+    min-width: 0;
+    width: 100%;
+}
+
+.map-region {
+    position: relative;
+    width: 100%;
+    min-width: 0;
+}

@@ -1,0 +1,33 @@
+/* ========================================
+   VARIÁVEIS E BASE
+   ======================================== */
+@import url('https://fonts.googleapis.com/css2?family=Scada:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+:root {
+    --green: #80e000;
+    --orange: #ff7915;
+    --gray: #f4f4f4;
+    --text: #454545;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Scada', sans-serif;
+}
+
+body {
+    margin: 0;
+    background: #fff;
+    color: var(--text);
+    font: 14px 'Arial Narrow', Arial, sans-serif;
+}
+
+button {
+    cursor: pointer;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+

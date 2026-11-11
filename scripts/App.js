@@ -288,7 +288,12 @@ function escolherLocal(local) {
 
 async function buscarSugestoes(termo) {
     try {
-        mostrarSugestoes(await consultarNominatim(termo, 3), escolherLocal);
+    const resultados = await consultarNominatim(termo, 3);
+        
+    const unicos = resultados.filter((local, index, self) => 
+        index === self.findIndex(l => l.display_name === local.display_name)
+    );
+    mostrarSugestoes(unicos, escolherLocal);
     } catch (erro) {
         console.error('Erro no autocomplete:', erro);
     }

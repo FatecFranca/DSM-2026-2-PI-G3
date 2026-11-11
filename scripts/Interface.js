@@ -402,10 +402,28 @@ export function mostrarSugestoes(locais, aoEscolher) {
     const caixa = $('sugestoes');
     caixa.innerHTML = '';
 
+    const termoDigitado = $('endereco').value.trim();
+
     for (const local of locais) {
         const item = document.createElement('div');
         item.className = 'sugestao-item';
-        item.textContent = local.display_name;
+
+        if (termoDigitado) {
+            // 1. Quebra o texto digitado em várias palavras, ignorando espaços vazios
+            const palavras = termoDigitado.split(/\s+/).filter(Boolean);
+
+            // Escapa caracteres especiais de cada palavra para evitar erros na RegEx
+            const palavrasEscapadas = palavras.map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+
+            // 2. Cria uma Regex que busca qualquer uma das palavras digitadas (ignorando maiúsculas/minúsculas e acentos)
+            const regex = new RegExp(`(${palavrasEscapadas.join('|')})`, 'gi');
+
+            // 3. Substitui todas as ocorrências encontradas envolvendo-as com <strong>
+            item.innerHTML = local.display_name.replace(regex, '<strong>$1</strong>');
+        } else {
+            item.textContent = local.display_name;
+        }
+
         item.addEventListener('click', function () {
             aoEscolher(local);
         });

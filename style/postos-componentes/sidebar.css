@@ -1,11 +1,37 @@
 /* ========================================
    BARRA LATERAL
    ======================================== */
+/* Transforma a sidebar em um container flexível com altura controlada */
 .sidebar {
-    position: relative;
+    position: sticky;
+    top: 0; /* Gruda no topo do navegador assim que o scroll chega nela */
+    height: auto; /* Altura natural baseada no conteúdo */
+    max-height: none; /* Remove qualquer limite rígido de altura */
+    display: block; /* Remove o flex que travava a estrutura */
     padding: 24px 38px;
     background: var(--gray);
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
+    overflow: visible; /* Garante que elementos como o autocomplete fiquem livres para aparecer */
+}
+
+/* Topo fixo */
+.grupo-topo-fixo {
+    flex-shrink: 0;
+}
+
+/* Miolo rolável: NÃO cresce para ocupar espaço vazio (flex-grow: 0), 
+   mas encolhe e ativa o scroll se a tela for menor que o conteúdo. */
+.sidebar-scroll {
+    overflow: visible;
+}
+
+.sidebar-footer-fixo {
+    padding-top: 0;
+}
+
+/* Ajuste opcional para aproximar o botão do conteúdo */
+.sidebar-footer-fixo .buscar {
+    margin: 12px auto 0 auto;
 }
 
 .app.collapsed {
@@ -92,8 +118,25 @@ input::placeholder {
     max-height: 240px;
     overflow: auto;
     background: #fff;
-    border-radius: 8px;
+    border-radius: 12px;
     box-shadow: 0 3px 12px #0002;
+}
+
+.sugestao-item {
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #333;
+    cursor: pointer;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    margin-top: 4px; 
+    border-radius: 6px;
+}
+
+.sugestao-item:hover {
+    background-color: #f0f4ff;
+    color: #0fb300;
+    border-color: #b0c4de; /* Destaca a borda ao passar o mouse */
 }
 
 #btnLocalizacao {

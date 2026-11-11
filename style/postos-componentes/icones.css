@@ -29,9 +29,9 @@
 
 .gasolina, .etanol, .diesel {
     flex-shrink: 0;
-    width: 24px;
-    height: 24px;
-    background-size: 20px 20px;
+    width: 8px;
+    height: 8px;
+    background-size: 8px 8px;
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -48,7 +48,6 @@
     background-image: url('../../img/icones/diesel.svg');
 }
 
-/* Remove a aparência padrão e a setinha nativa */
 #selOrdenacao {
     appearance: none;
     -webkit-appearance: none;

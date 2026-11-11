@@ -27,10 +27,12 @@
     </header>
 
     <div class="app" id="app">
+
         <aside class="sidebar" id="filtros" aria-label="Filtros de busca">
             <div class="efeito-gradiente"></div>
 
-            <section class="grupo">
+            <!-- 1. TOPO: Buscar Endereço -->
+            <section class="grupo grupo-topo-fixo">
                 <h2>
                     <span class="search-icon" aria-hidden="true">
                         <img src="./img/icones/lupa.svg" alt="">
@@ -38,8 +40,12 @@
                     Buscar endereço
                 </h2>
 
-                <input id="endereco" aria-label="Seu endereço" placeholder="Franca Av. Chico Júlio" autocomplete="street-address">
-                <div id="sugestoes" class="sugestoes-box"></div>
+                <div class="localizacao-manual">
+                    <input id="endereco" aria-label="Seu endereço" placeholder="Franca Av. Chico Júlio" autocomplete="street-address">
+                    <div id="sugestoes" class="sugestoes-box"></div>
+                </div>
+
+                <p class="ou">ou</p>
 
                 <button id="btnLocalizacao" class="btn-gps" type="button">
                     <img src="./img/gps.svg" alt="" aria-hidden="true">
@@ -47,90 +53,94 @@
                 </button>
             </section>
 
-            <hr>
+            <!-- 2. MIOLO ROLÁVEL (Área que encolhe/rola se a tela for pequena) -->
+            <div class="sidebar-scroll">
+                <hr>
 
-            <section class="grupo">
-                <h2>
-                    <span class="location-icon" aria-hidden="true">
-                        <img src="./img/icones/pin_verde.svg" alt="">
-                    </span>
-                    Raio de busca
-                </h2>
+                <section class="grupo">
+                    <h2>
+                        <span class="location-icon" aria-hidden="true">
+                            <img src="./img/icones/pin_verde.svg" alt="">
+                        </span>
+                        Raio de busca
+                    </h2>
 
-                <div class="raio-wrapper">
-                    <input type="range" id="selRaio" min="1" max="15" value="5" aria-label="Raio de busca em quilômetros">
-                    <output id="balao-raio" for="selRaio">5 km</output>
-                </div>
-            </section>
-
-            <hr>
-
-            <section class="grupo fuel-group">
-                <h2>
-                    <span class="gas-icon" aria-hidden="true">
-                        <img src="./img/icones/bomba_verde.svg" alt="">
-                    </span>
-                    Combustível
-                </h2>
-
-                <label class="fuel">
-                    <span><i class="drop"><img src="./img/icones/gasolina.svg" alt=""></i>Gasolina</span>
-                    <input type="checkbox" data-fuel="gasolina">
-                </label>
-
-                <label class="fuel">
-                    <span><i class="drop"><img src="./img/icones/gasolina.svg" alt=""></i>Gasolina aditivada</span>
-                    <input type="checkbox" data-fuel="gasolina-aditivada">
-                </label>
-
-                <label class="fuel">
-                    <span><i class="drop"><img src="./img/icones/etanol.svg" alt=""></i>Etanol</span>
-                    <input type="checkbox" data-fuel="etanol">
-                </label>
-
-                <label class="fuel">
-                    <span><i class="drop"><img src="./img/icones/diesel.svg" alt=""></i>Diesel S10</span>
-                    <input type="checkbox" data-fuel="diesel-s10">
-                </label>
-
-                <label class="fuel">
-                    <span><i class="drop"><img src="./img/icones/diesel.svg" alt=""></i>Diesel S500</span>
-                    <input type="checkbox" data-fuel="diesel-s500">
-                </label>
-
-                <p id="avisoMapa" class="aviso-mapa" role="status">
-                    Para ver preços no mapa, marque apenas um combustível.
-                </p>
+                    <div class="raio-wrapper">
+                        <input type="range" id="selRaio" min="1" max="15" value="5" aria-label="Raio de busca em quilômetros">
+                        <output id="balao-raio" for="selRaio">5 km</output>
+                    </div>
+                </section>
 
                 <hr>
 
-                <div class="advanced">
-                    <span id="rotuloBandeira">Bandeira</span>
+                <section class="grupo fuel-group">
+                    <h2>
+                        <span class="gas-icon" aria-hidden="true">
+                            <img src="./img/icones/bomba_verde.svg" alt="">
+                        </span>
+                        Combustível
+                    </h2>
 
-                    <select id="selBandeira" aria-labelledby="rotuloBandeira" hidden>
-                        <option value="">Todas as bandeiras</option>
-                    </select>
-
-                    <details id="menuBandeiras" class="menu-bandeiras">
-                        <summary id="bandeiraEscolhida">Todas as bandeiras</summary>
-                        <div id="listaBandeiras"></div>
-                    </details>
-
-                    <label>
-                        <input id="chkApenasANP" type="checkbox">
-                        Apenas com preços da ANP
+                    <label class="fuel">
+                        <span><i class="drop"><img src="./img/icones/gasolina.svg" alt=""></i>Gasolina Comum</span>
+                        <input type="checkbox" data-fuel="gasolina">
                     </label>
-                </div>
 
-                <hr>
+                    <label class="fuel">
+                        <span><i class="drop"><img src="./img/icones/gasolina.svg" alt=""></i>Gasolina Aditivada</span>
+                        <input type="checkbox" data-fuel="gasolina-aditivada">
+                    </label>
 
+                    <label class="fuel">
+                        <span><i class="drop"><img src="./img/icones/etanol.svg" alt=""></i>Etanol</span>
+                        <input type="checkbox" data-fuel="etanol">
+                    </label>
+
+                    <label class="fuel">
+                        <span><i class="drop"><img src="./img/icones/diesel.svg" alt=""></i>Diesel S10</span>
+                        <input type="checkbox" data-fuel="diesel-s10">
+                    </label>
+
+                    <label class="fuel">
+                        <span><i class="drop"><img src="./img/icones/diesel.svg" alt=""></i>Diesel S500</span>
+                        <input type="checkbox" data-fuel="diesel-s500">
+                    </label>
+
+                    <p id="avisoMapa" class="aviso-mapa" role="status">
+                        Para ver preços no mapa, marque apenas um combustível.
+                    </p>
+
+                    <hr>
+
+                    <div class="advanced">
+                        <span id="rotuloBandeira">Bandeira</span>
+
+                        <select id="selBandeira" aria-labelledby="rotuloBandeira" hidden>
+                            <option value="">Todas as bandeiras</option>
+                        </select>
+
+                        <details id="menuBandeiras" class="menu-bandeiras">
+                            <summary id="bandeiraEscolhida">Todas as bandeiras</summary>
+                            <div id="listaBandeiras"></div>
+                        </details>
+
+                        <label>
+                            <input id="chkApenasANP" type="checkbox">
+                            Apenas com preços da ANP
+                        </label>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 3. BOTÃO BUSCAR FIXO FORA DO SCROLL, LOGO ABAIXO DA DIV -->
+            <div class="sidebar-footer-fixo">
                 <button class="buscar" id="btnEndereco" type="button">
                     <span aria-hidden="true">
                         <img src="./img/icones/lupa_branca.svg" alt="">
                     </span>
                     Buscar
                 </button>
-            </section>
+            </div>
         </aside>
 
         <main class="conteudo">
@@ -166,6 +176,8 @@
             <h1>Digite seu endereço</h1>
 
             <input id="welcomeEndereco" aria-label="Seu endereço" placeholder="Franca Av. Chico Júlio" autocomplete="street-address">
+
+            <div id="sugestoesEndereco" class="sugestoes-endereco"></div>
 
             <p class="ou">ou</p>
 

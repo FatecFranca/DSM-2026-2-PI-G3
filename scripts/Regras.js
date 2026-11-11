@@ -11,7 +11,7 @@ export const config = {
     minCaracteresNome: 12,        // evita casar nomes genéricos como "POSTO"
     distanciaDuplicadoKm: 0.03,   // 30 m: pins próximos com nome igual são o mesmo posto
     minCaracteresBusca: 3,
-    atrasoAutocompleteMs: 800,
+    atrasoAutocompleteMs: 1000,
     caminhoANP: './dados/json/postos_com_coordenadas.json',
     caminhoOsm: './dados/json/osm_BR.json',
     caminhoBandeiras: './dados/json/bandeiras.json',

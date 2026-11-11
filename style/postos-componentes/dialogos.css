@@ -42,7 +42,7 @@
     font-size: 14px;
 }
 
-.welcome .ou {
+.ou {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -53,8 +53,7 @@
     color: #444;
 }
 
-.welcome .ou::before,
-.welcome .ou::after {
+.ou::before, .ou::after {
     content: '';
     flex: 1;
     height: 1px;

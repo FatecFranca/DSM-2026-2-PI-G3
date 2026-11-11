@@ -1,35 +1,37 @@
 /* ========================================
    BARRA LATERAL
    ======================================== */
-/* Transforma a sidebar em um container flexível com altura controlada */
+
 .sidebar {
     position: sticky;
-    top: 0; /* Gruda no topo do navegador assim que o scroll chega nela */
-    height: auto; /* Altura natural baseada no conteúdo */
-    max-height: none; /* Remove qualquer limite rígido de altura */
-    display: block; /* Remove o flex que travava a estrutura */
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 74px); 
+    max-height: calc(100vh - 74px);
     padding: 24px 38px;
     background: var(--gray);
     box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1);
-    overflow: visible; /* Garante que elementos como o autocomplete fiquem livres para aparecer */
+    overflow: hidden; 
 }
 
-/* Topo fixo */
 .grupo-topo-fixo {
     flex-shrink: 0;
 }
 
-/* Miolo rolável: NÃO cresce para ocupar espaço vazio (flex-grow: 0), 
-   mas encolhe e ativa o scroll se a tela for menor que o conteúdo. */
 .sidebar-scroll {
-    overflow: visible;
+    flex: 0 1 auto;
+    overflow-y: auto;
+    min-height: 0;
+    padding-right: 4px;
 }
 
 .sidebar-footer-fixo {
-    padding-top: 0;
+    flex-shrink: 0;
+    padding-top: 16px;
+    background: var(--gray);
 }
 
-/* Ajuste opcional para aproximar o botão do conteúdo */
 .sidebar-footer-fixo .buscar {
     margin: 12px auto 0 auto;
 }
@@ -85,9 +87,11 @@
 }
 
 hr {
-    margin-top: 16px;
-    margin-bottom: 16px;
-    border: 1px solid #D4D4D4;
+    display: block;
+    flex-shrink: 0; 
+    margin: 16px 0;
+    border: none;
+    border-top: 1px solid #C4C4C4; 
 }
 
 input:not([type=range]):not([type=checkbox]),
@@ -136,7 +140,7 @@ input::placeholder {
 .sugestao-item:hover {
     background-color: #f0f4ff;
     color: #0fb300;
-    border-color: #b0c4de; /* Destaca a borda ao passar o mouse */
+    border-color: #b0c4de;
 }
 
 #btnLocalizacao {

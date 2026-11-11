@@ -1,36 +1,111 @@
+/* ========================================
+   RESPONSIVO COMPARTILHADO
+   Usado por: Postos, Sobre e Dicas.
+   ======================================== */
 
-@media (max-width: 768px) {
-    .cabecalho {
+@media (max-width: 900px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+    .topo {
         height: auto;
-        padding: 20px;
-        flex-direction: column;
-        gap: 20px;
-    }
-
-    nav {
+        display: flex;
         flex-wrap: wrap;
-        justify-content: center;
-        gap: 8px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px 12px;
+        padding: 12px 16px;
     }
 
-    nav a {
-        padding: 12px 18px;
-        font-size: 15px;
+    .logo {
+        width: 110px;
+        margin-left: 0;
+        grid-column: auto;
+        grid-row: auto;
     }
 
-    .perfil {
+    .avatar {
+        grid-column: auto;
+        grid-row: auto;
+        justify-self: auto;
+        width: 40px;
+        height: 40px;
+    }
+
+    .menu {
+        order: 3;
+        flex: 0 0 100%;
+        width: 100%;
+        grid-column: auto;
+        grid-row: auto;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        justify-items: center;
+        gap: 6px;
+    }
+
+    #navPostos,
+    #navSobre,
+    #navDicas {
+        grid-column: auto;
+    }
+
+    .menu a,
+    .menu button {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+
+    footer {
+        position: static;
+        padding: 20px 16px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 425px) {
+
+    .topo {
+        padding: 10px 12px;
+        gap: 8px 10px;
+    }
+
+    .logo {
+        width: 92px;
+    }
+
+    .avatar {
+        width: 34px;
+        height: 34px;
+    }
+
+    .menu {
+        display: flex;
+        justify-content: space-between;
+        gap: 4px;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .menu::-webkit-scrollbar {
         display: none;
     }
 
+    .menu a,
+    .menu button {
+        flex: 0 0 auto;
+        padding: 7px 12px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
     .cards {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
     }
 
-    .titulo-pagina h1 {
-        font-size: 29px;
-    }
-
-    .card-sobre {
-        padding: 25px;
+    .card {
+        min-width: 0;
+        padding: 24px;
     }
 }

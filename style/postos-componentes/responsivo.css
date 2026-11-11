@@ -1,6 +1,3 @@
-/* ========================================
-   RESPONSIVO: pelo espaço disponível para os cards
-   ======================================== */
 .lista-container {
     --results-guide-edge: clamp(32px, calc((100cqi - var(--figma-grid-width)) / 2), var(--figma-edge-max));
     container-type: inline-size;
@@ -30,5 +27,327 @@
 @container (max-width: 580px) {
     #postos {
         --card-columns: 1;
+    }
+}
+
+/* ========================================
+   Tablet (até 900px)
+   ======================================== */
+@media (max-width: 900px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+    .topo {
+        height: auto;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px 12px;
+        padding: 12px 16px;
+    }
+
+    .logo {
+        width: 110px;
+        margin-left: 0;
+        grid-column: auto;
+        grid-row: auto;
+    }
+
+    .avatar {
+        grid-column: auto;
+        grid-row: auto;
+        justify-self: auto;
+        width: 40px;
+        height: 40px;
+    }
+
+    .menu {
+        order: 3;
+        flex: 0 0 100%;
+        width: 100%;
+        grid-column: auto;
+        grid-row: auto;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        justify-items: center;
+        gap: 6px;
+    }
+
+    #navPostos,
+    #navSobre,
+    #navDicas {
+        grid-column: auto;
+    }
+
+    .menu a,
+    .menu button {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+
+    .app,
+    .app.collapsed {
+        grid-template-columns: minmax(0, 1fr);
+        min-height: 0;
+        max-width: 100%;
+    }
+
+    .conteudo,
+    .collapsed .conteudo {
+        grid-column: auto;
+    }
+
+    .toggle-filtros {
+        display: none;
+    }
+
+    .sidebar {
+        position: static;
+        height: auto;
+        max-height: none;
+        overflow: visible;
+        padding: 20px 16px;
+    }
+
+    .efeito-gradiente {
+        display: none;
+    }
+
+    .sidebar-scroll {
+        flex: none;
+        overflow: visible;
+        padding-right: 0;
+    }
+
+    .sidebar-footer-fixo {
+        padding-top: 0;
+    }
+
+    .sidebar-footer-fixo .buscar {
+        width: 100%;
+    }
+
+    .grupo h2 {
+        font-size: 18px;
+    }
+
+    input:not([type=range]):not([type=checkbox]),
+    select,
+    #welcomeEndereco {
+        font-size: 16px;
+    }
+
+
+    #map {
+        height: clamp(260px, 45vh, 380px);
+    }
+
+    .lista-container,
+    .collapsed .lista-container {
+        padding: 20px 16px 28px;
+    }
+
+    .ordenacao-resultados {
+        justify-content: space-between;
+    }
+
+    .ordenacao-resultados select {
+        width: 160px;
+    }
+
+    #postos {
+        gap: 28px 16px;
+    }
+
+    /* ---------- Card ---------- */
+    .posto {
+        padding: 0 14px 30px;
+    }
+
+    .posto-topo {
+        height: 88px;
+        margin: 0 -14px 10px;
+    }
+
+    .logo-marca img {
+        width: 150px;
+        height: 66px;
+    }
+
+    .posto-cabecalho h3 {
+        font-size: 15px;
+    }
+
+    .lista-produtos {
+        gap: 8px;
+    }
+
+    .lista-produtos li {
+        flex: 1 1 0;
+        min-width: 0;
+    }
+
+    .lista-produtos li .nome-combustivel {
+        font-size: 12px;
+        overflow: hidden;
+    }
+
+    .lista-produtos li .preco {
+        font-size: 14px;
+    }
+
+    /* ---------- Diálogos ---------- */
+    .welcome {
+        width: calc(100vw - 32px);
+        max-width: 390px;
+    }
+
+    .info-dialog {
+        max-width: calc(100vw - 32px);
+        padding: 24px;
+    }
+}
+
+/* ========================================
+   MOBILE PEQUENO (até 425px)
+   ======================================== */
+@media (max-width: 425px) {
+
+    .topo {
+        padding: 10px 12px;
+        gap: 8px 10px;
+    }
+
+    .logo {
+        width: 92px;
+    }
+
+    .avatar {
+        width: 34px;
+        height: 34px;
+    }
+
+    .menu {
+        display: flex;
+        justify-content: space-between;
+        gap: 4px;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+
+    .menu::-webkit-scrollbar {
+        display: none;
+    }
+
+    .menu a,
+    .menu button {
+        flex: 0 0 auto;
+        padding: 7px 12px;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .sidebar {
+        padding: 16px 12px;
+    }
+
+    .grupo h2 {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    .fuel {
+        margin: 10px 0;
+        font-size: 13px;
+    }
+
+    #map {
+        height: clamp(220px, 40vh, 300px);
+    }
+
+    .lista-container,
+    .collapsed .lista-container {
+        padding: 14px 12px 22px;
+    }
+
+    .ordenacao-resultados label {
+        font-size: 11px;
+    }
+
+    .ordenacao-resultados select {
+        width: 140px;
+    }
+
+    #postos {
+        gap: 26px 12px;
+    }
+
+    .posto {
+        padding: 0 10px 26px;
+    }
+
+    .posto-topo {
+        height: 72px;
+        margin: 0 -10px 8px;
+    }
+
+    .logo-marca img {
+        width: 120px;
+        height: 52px;
+    }
+
+    .posto-cabecalho {
+        gap: 6px;
+        margin-bottom: 10px;
+    }
+
+    .posto-cabecalho h3 {
+        font-size: 14px;
+    }
+
+    .endereco {
+        font-size: 10px;
+    }
+
+    .distancia,
+    .posto-cabecalho-dir {
+        font-size: 11px;
+    }
+
+    .lista-produtos {
+        gap: 6px;
+    }
+
+    .lista-produtos li .nome-combustivel {
+        font-size: 11px;
+        padding-left: 16px;
+        background-size: 14px 14px;
+    }
+
+    .lista-produtos li .preco {
+        font-size: 12px;
+        padding-left: 16px;
+    }
+
+    .lista-produtos li .data-coleta {
+        font-size: 8px;
+        padding-left: 16px;
+    }
+
+    .btn-rota {
+        padding: 8px 18px;
+        font-size: 13px;
+    }
+
+    .welcome {
+        width: calc(100vw - 24px);
+        padding: 24px 18px 20px;
+        border-radius: 24px;
+    }
+
+    .welcome > form > img {
+        width: 140px;
     }
 }

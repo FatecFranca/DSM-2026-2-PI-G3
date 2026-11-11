@@ -1,0 +1,28 @@
+/* ========================================
+   RESPONSIVO: pelo espaço disponível para os cards
+   ======================================== */
+.lista-container {
+    container-type: inline-size;
+}
+
+#postos {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@container (max-width: 1900px) {
+    #postos {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@container (max-width: 1450px) {
+    #postos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@container (max-width: 900px) {
+    #postos {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

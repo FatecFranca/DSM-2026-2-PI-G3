@@ -24,10 +24,6 @@
     left: -19px;
 }
 
-.collapsed #postos {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
 .collapsed .lista-container {
     padding: 26px 40px 28px 30px;
 }

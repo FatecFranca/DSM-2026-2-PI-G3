@@ -2,27 +2,33 @@
    RESPONSIVO: pelo espaço disponível para os cards
    ======================================== */
 .lista-container {
+    --results-guide-edge: clamp(32px, calc((100cqi - var(--figma-grid-width)) / 2), var(--figma-edge-max));
     container-type: inline-size;
 }
 
 #postos {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    --card-columns: 3;
+    grid-template-columns: repeat(var(--card-columns), minmax(0, 1fr));
 }
 
-@container (max-width: 1900px) {
-    #postos {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+.app.collapsed #postos {
+    --card-columns: 4;
+}
+
+@container (max-width: 1200px) {
+    .app.collapsed #postos {
+        --card-columns: 3;
     }
 }
 
-@container (max-width: 1450px) {
+@container (max-width: 820px) {
     #postos {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        --card-columns: 2;
     }
 }
 
-@container (max-width: 900px) {
+@container (max-width: 580px) {
     #postos {
-        grid-template-columns: minmax(0, 1fr);
+        --card-columns: 1;
     }
 }

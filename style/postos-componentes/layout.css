@@ -4,8 +4,12 @@
    ======================================== */
 .app {
     display: grid;
-    grid-template-columns: 396px minmax(0, 1fr);
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+    width: 100%;
+    max-width: var(--layout-max-width);
+    margin-inline: auto;
     min-height: calc(100vh - 74px);
+    container-type: inline-size;
 }
 
 .conteudo {

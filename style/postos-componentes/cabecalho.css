@@ -3,26 +3,51 @@
    ======================================== */
 .topo {
     height: 74px;
-    display: flex;
+    display: grid;
+    grid-template-columns:
+        var(--sidebar-width)
+        var(--figma-gutter)
+        minmax(0, 1fr)
+        var(--figma-column-width)
+        clamp(32px, calc((100% - var(--figma-grid-width)) / 2), var(--figma-edge-max));
     align-items: center;
-    gap: 8%;
-    padding: 0 7%;
+    width: 100%;
+    padding-block: 0;
+    padding-inline: max(0px, calc((100% - var(--layout-max-width)) / 2));
     background: var(--gray);
     position: relative;
     z-index: 2;
+    container-type: inline-size;
 }
 
 .logo {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
     width: 140px;
-    flex-shrink: 0;
+    margin-left: clamp(32px, calc((100cqi - var(--figma-grid-width)) / 2), var(--figma-edge-max));
 }
 
 .menu {
-    display: flex;
+    grid-column: 3;
+    grid-row: 1;
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr) max-content minmax(0, 1fr) max-content minmax(0, 1fr);
     align-items: center;
-    justify-content: space-between;
-    flex: 1;
-    gap: 20px;
+    min-width: 0;
+    width: calc(100% + (var(--figma-column-width) - 47px) / 2);
+}
+
+#navPostos {
+    grid-column: 1;
+}
+
+#navSobre {
+    grid-column: 3;
+}
+
+#navDicas {
+    grid-column: 5;
 }
 
 .menu a,
@@ -42,9 +67,11 @@
 }
 
 .avatar {
+    grid-column: 4;
+    grid-row: 1;
+    justify-self: center;
     width: 47px;
     height: 47px;
-    flex-shrink: 0;
     padding: 0;
     border: 0;
     border-radius: 50%;

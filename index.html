@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="EncontraA! — encontre e compare postos de combustível perto de você.">
-    <title>PI | EncontraA! — Postos próximos</title>
+    <meta name="description" content="EncontraAi — encontre e compare postos de combustível perto de você.">
+    <title>PI | EncontraAi — Postos próximos</title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="./style/postos.css">
 </head>
 <body>
     <header class="topo">
-        <a class="logo" href="./" aria-label="EncontraA! Início">
-            <img src="./img/logo/logo_svg.svg" alt="EncontraA!">
+        <a class="logo" href="./" aria-label="EncontraAi Início">
+            <img src="./img/logo/logo_svg.svg" alt="EncontraAi">
         </a>
 
         <nav class="menu" aria-label="Navegação principal">
@@ -29,8 +29,7 @@
     <div class="app" id="app">
 
         <aside class="sidebar" id="filtros" aria-label="Filtros de busca">
-            <div class="efeito-gradiente"></div>
-
+            
             <!-- 1. TOPO: Buscar Endereço -->
             <section class="grupo grupo-topo-fixo">
                 <h2>
@@ -185,13 +184,14 @@
 
     <dialog id="welcome" class="welcome">
         <form id="welcomeForm">
-            <img src="./img/logo/logo_svg.svg" alt="EncontraA!">
+            <img src="./img/logo/logo_svg.svg" alt="EncontraAi">
 
             <h1>Digite seu endereço</h1>
 
-            <input id="welcomeEndereco" aria-label="Seu endereço" placeholder="Franca Av. Chico Júlio" autocomplete="street-address">
-
-            <div id="sugestoesEndereco" class="sugestoes-endereco"></div>
+            <div class="localizacao-manual">
+                <input id="welcomeEndereco" aria-label="Seu endereço" placeholder="Franca Av. Chico Júlio" autocomplete="street-address">
+                <div id="sugestoesEndereco" class="sugestoes-box"></div>
+            </div>
 
             <p class="ou">ou</p>
 
@@ -215,7 +215,7 @@
                     <option value="">Selecione o combustível</option>
                     <option value="gasolina">Gasolina</option>
                     <option value="etanol">Etanol</option>
-                    <option value="diesel">Diesel</option>
+                    <option value="diesel-s10">Diesel</option>
                 </select>
 
                 <span class="select-arrow" aria-hidden="true">

@@ -309,7 +309,7 @@ export function adicionarCard(posto, combustivel) {
         </div>
         ${htmlProdutos(posto, combustivel)}
         <a class="btn-rota" href="${escaparHtml(urlMapas)}" target="_blank" rel="noopener noreferrer">
-            Abrir rota no Google Maps
+            Abrir no Google Maps
         </a>
     `;
 
@@ -396,13 +396,14 @@ export function atualizarAvisoMapa(combustiveis) {
    ======================================== */
 export function limparSugestoes() {
     $('sugestoes').innerHTML = '';
+    $('sugestoesEndereco').innerHTML = '';
 }
 
-export function mostrarSugestoes(locais, aoEscolher) {
-    const caixa = $('sugestoes');
+export function mostrarSugestoes(locais, aoEscolher, campo) {
+    const caixa = $(campo.id === 'welcomeEndereco' ? 'sugestoesEndereco' : 'sugestoes');
     caixa.innerHTML = '';
 
-    const termoDigitado = $('endereco').value.trim();
+    const termoDigitado = campo.value.trim();
 
     for (const local of locais) {
         const item = document.createElement('div');
@@ -425,7 +426,7 @@ export function mostrarSugestoes(locais, aoEscolher) {
         }
 
         item.addEventListener('click', function () {
-            aoEscolher(local);
+            aoEscolher(local, campo);
         });
         caixa.appendChild(item);
     }

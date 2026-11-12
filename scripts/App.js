@@ -280,28 +280,28 @@ async function buscarEndereco(texto) {
 /* ========================================
    AUTOCOMPLETE
    ======================================== */
-function escolherLocal(local) {
-    $('endereco').value = local.display_name;
+function escolherLocal(local, campo) {
+    campo.value = local.display_name;
     limparSugestoes();
     usarLocalizacao(parseFloat(local.lat), parseFloat(local.lon), 'Endereço selecionado!');
 }
 
-async function buscarSugestoes(termo) {
+async function buscarSugestoes(termo, campo) {
     try {
     const resultados = await consultarNominatim(termo, 3);
         
     const unicos = resultados.filter((local, index, self) => 
         index === self.findIndex(l => l.display_name === local.display_name)
     );
-    mostrarSugestoes(unicos, escolherLocal);
+    mostrarSugestoes(unicos, escolherLocal, campo);
     } catch (erro) {
         console.error('Erro no autocomplete:', erro);
     }
 }
 
 function aoDigitar(evento) {
+    const campo = evento.target;
     const texto = evento.target.value.trim();
-
     clearTimeout(timerAutocomplete);
 
     if (texto.length < config.minCaracteresBusca) {
@@ -310,7 +310,8 @@ function aoDigitar(evento) {
     }
 
     timerAutocomplete = setTimeout(function () {
-        buscarSugestoes(texto);
+        campo.setAttribute('autocomplete', texto ? 'off' : 'on');
+        buscarSugestoes(texto, campo);
     }, config.atrasoAutocompleteMs);
 }
 
@@ -355,6 +356,7 @@ function registrarEventos() {
     });
 
     $('endereco').addEventListener('input', aoDigitar);
+    $('welcomeEndereco').addEventListener('input', aoDigitar);
 
     $('endereco').addEventListener('keydown', function (evento) {
         if (evento.key === 'Enter') {

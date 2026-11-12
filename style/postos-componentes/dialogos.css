@@ -42,6 +42,15 @@
     font-size: 14px;
 }
 
+.welcome .localizacao-manual {
+    position: relative;
+    width: 100%;
+}
+
+.welcome .sugestoes-box {
+    max-height: 200px;
+}
+
 .ou {
     display: flex;
     align-items: center;

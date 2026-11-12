@@ -394,9 +394,19 @@ function registrarEventos() {
         document.querySelector('.conteudo').scrollIntoView({ behavior: 'smooth' });
     });
 
-    $('welcomeRaio').addEventListener('input', function () {
-        $('welcomeOutput').textContent = `${$('welcomeRaio').value} km`;
-    });
+    function atualizarRaioBoasVindas() {
+        const slider = $('welcomeRaio');
+        const min = Number(slider.min);
+        const max = Number(slider.max);
+        const valor = Number(slider.value);
+        const percentual = (valor - min) / (max - min) * 100;
+
+    $('welcomeOutput').textContent = `${valor} km`;
+    slider.style.setProperty('--progress', `${percentual}%`);
+}
+
+    $('welcomeRaio').addEventListener('input', atualizarRaioBoasVindas);
+    atualizarRaioBoasVindas();
 
     $('welcomeForm').addEventListener('submit', enviarBoasVindas);
     $('welcomeGps').addEventListener('click', usarGpsBoasVindas);

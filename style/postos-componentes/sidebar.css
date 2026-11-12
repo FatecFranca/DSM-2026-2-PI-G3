@@ -4,7 +4,9 @@
 
 .sidebar {
     position: sticky;
-    top: 0;
+    top: 74px;
+    align-self: start;
+    z-index: 10;
     display: flex;
     flex-direction: column;
     height: calc(100vh - 74px); 
@@ -200,7 +202,8 @@ input[type=range] {
     cursor: pointer;
 }
 
-#selRaio {
+#selRaio,
+#welcomeRaio {
     appearance: none;
     -webkit-appearance: none;
     height: 5px;
@@ -214,7 +217,8 @@ input[type=range] {
     );
 }
 
-#selRaio::-webkit-slider-runnable-track {
+#selRaio::-webkit-slider-runnable-track,
+#welcomeRaio::-webkit-slider-runnable-track {
     height: 5px;
     border: 0;
     border-radius: 999px;
@@ -222,7 +226,8 @@ input[type=range] {
     background: transparent;
 }
 
-#selRaio::-webkit-slider-thumb {
+#selRaio::-webkit-slider-thumb,
+#welcomeRaio::-webkit-slider-thumb {
     appearance: none;
     -webkit-appearance: none;
     width: 18px;
@@ -234,7 +239,8 @@ input[type=range] {
     background: var(--green);
 }
 
-#selRaio::-moz-range-track {
+#selRaio::-moz-range-track,
+#welcomeRaio::-moz-range-track {
     height: 5px;
     border: 0;
     border-radius: 999px;
@@ -242,7 +248,8 @@ input[type=range] {
     background: transparent;
 }
 
-#selRaio::-moz-range-thumb {
+#selRaio::-moz-range-thumb,
+#welcomeRaio::-moz-range-thumb {
     width: 18px;
     height: 18px;
     border: 0;

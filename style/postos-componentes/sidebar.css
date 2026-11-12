@@ -51,7 +51,19 @@
 }
 
 .collapsed .toggle-filtros {
-    left: -19px;
+    position: fixed;
+
+    left: calc(
+        max(0px, (100vw - var(--layout-max-width)) / 2)
+        + var(--sidebar-collapsed-width)
+        - 19px
+    );
+
+    top: calc(
+        74px
+        + clamp(320px, 40vh, 460px)
+        - 31px
+    );
 }
 
 .collapsed .lista-container {

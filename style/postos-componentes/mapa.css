@@ -19,9 +19,20 @@
 }
 
 .toggle-filtros {
-    position: absolute;
-    left: -22px;
-    bottom: -7px;
+    position: fixed;
+
+    left: calc(
+        max(0px, (100vw - var(--layout-max-width)) / 2)
+        + var(--sidebar-width)
+        - 22px
+    );
+
+    top: calc(
+        74px
+        + clamp(320px, 40vh, 460px)
+        - 31px
+    );
+
     z-index: 20;
     width: 38px;
     height: 38px;

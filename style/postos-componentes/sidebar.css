@@ -139,7 +139,7 @@ input::placeholder {
 
 .sugestao-item:hover {
     background-color: #f0f4ff;
-    color: #0fb300;
+    color: #83E509;
     border-color: #b0c4de;
 }
 
@@ -215,11 +215,25 @@ input[type=range] {
 }
 
 .fuel input {
+    appearance: none;
     width: 16px;
     height: 16px;
     margin: 0;
-    accent-color: var(--green);
+    border: 1px solid #888;
+    border-radius: 3px;
+    background: white;
+    cursor: pointer;
 }
+
+.fuel input:checked {
+    border-color: var(--green);
+    background-color: var(--green);
+    background-image: url(../../img/icones/checkboxbr.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 13px;
+}
+
 
 .aviso-mapa {
     margin-top: 18px;
@@ -362,7 +376,7 @@ input[type=range] {
 }
 
 .buscar:hover {
-    background: #6cc000;
+    background: #83E509;
 }
 
 .buscar .search-icon {

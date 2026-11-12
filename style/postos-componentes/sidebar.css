@@ -56,7 +56,7 @@
     padding: 26px var(--results-guide-edge) 28px max(2px, calc(var(--results-guide-edge) - var(--sidebar-collapsed-width)));
 }
 
-.efeito-gradiente {
+/*.efeito-gradiente {
     position: absolute;
     top: 0;
     left: 0;
@@ -65,7 +65,7 @@
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0.08), transparent);
     pointer-events: none; 
 }
-
+*/
 .grupo {
     padding: 0;
 }

@@ -1,4 +1,7 @@
-﻿# ⛽ EncontraAi — Encontre postos próximos
+﻿<h1 align="center">
+  <img src="img/logo/logo_svg.svg" alt="EncontraAi" width="130">
+  — Encontre postos próximos
+</h1>
 
 Encontre, compare e economize combustível!</strong>
 
@@ -6,9 +9,20 @@ Plataforma web desenvolvida para facilitar a localização de postos de combust�
 
 <p align="center">
   <a href="https://fatecfranca.github.io/DSM-2026-2-PI-G3/">Acessar aplicação</a>
+  &nbsp;·&nbsp;
+  <a href="https://www.figma.com/design/B0WazoZDeIPaFI7dYGGubj/EncontreAi-Wireframe---Auta-fidelidade?node-id=0-1">Ver protótipo no Figma</a>
 </p>
-
 ---
+
+## Telas da aplicação
+
+### Tela inicial
+
+![Tela inicial com opções para digitar um endereço ou usar a localização atual](img/readme/tela-inicial.png)
+
+### Resultados da busca
+
+![Mapa com postos próximos, filtros de busca e cartões com preços de combustíveis](img/readme/tela-principal.png)
 
 ## 📌 Sobre o projeto
 
@@ -119,5 +133,6 @@ Projeto Integrador — Desenvolvimento de Software Multiplataforma (DSM).
 </p>
 
 <p align="center">
-  <strong>EncontraAi — Encontre, compare e economize!</strong>
+  <img src="img/logo/logo_svg.svg" alt="EncontraAi" height="24">
+  <strong>&nbsp;— Encontre, compare e economize!</strong>
 </p>

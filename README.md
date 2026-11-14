@@ -72,39 +72,6 @@ Por meio de uma interface intuitiva e de um mapa interativo, o usuário pode pes
 | ANP | Dados de preços de combustíveis |
 | JSON | Armazenamento e organização dos dados |
 
-## 📂 Estrutura do projeto
-
-text
-DSM-2026-2-PI-G3/
-│
-├── index.html
-│
-├── pages/
-│   ├── sobre.html
-│   └── dicas.html
-│
-├── scripts/
-│   ├── App.js
-│   ├── Dados.js
-│   ├── Interface.js
-│   ├── Math.js
-│   ├── Regras.js
-│   └── navegacao.js
-│
-├── style/
-│   ├── postos.css
-│   ├── sobre-dicas.css
-│   └── postos-componentes/
-│
-├── dados/
-│   └── json/
-│       ├── postos_com_coordenadas.json
-│       ├── osm_BR.json
-│       └── bandeiras.json
-│
-└── img/
-    ├── logo/
-    └── icones/
 
 
 ## 🌐 Deploy
@@ -141,7 +108,8 @@ O EncontraAi utiliza fontes externas e bases de dados em formato JSON:
 Projeto Integrador — Desenvolvimento de Software Multiplataforma (DSM).
 
 *Instituição:* FATEC Franca  
-*Grupo:* G3  
+*Grupo:* G3 
+*Integrantes: Bruno Gomes, Cleiton Cesar, Gustavo Adriano, Luis Eduardo Sampaio, Luiz Eduardo Morelli
 *Período:* 2026/2
 
 ---

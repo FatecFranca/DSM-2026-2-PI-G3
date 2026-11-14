@@ -1,5 +1,5 @@
 ﻿<h1 align="center">
-  <img src="img/logo/logo_svg.svg" alt="EncontraAi" width="130">
+  <img src="img/logo/logo_svg.svg" alt="EncontraAi" width="150">
   — Encontre postos próximos
 </h1>
 
@@ -133,6 +133,6 @@ Projeto Integrador — Desenvolvimento de Software Multiplataforma (DSM).
 </p>
 
 <p align="center">
-  <img src="img/logo/logo_svg.svg" alt="EncontraAi" height="24">
+  <img src="img/logo/logo_svg.svg" alt="EncontraAi" height="26">
   <strong>&nbsp;— Encontre, compare e economize!</strong>
 </p>
